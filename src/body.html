@@ -468,6 +468,19 @@
     </div>
   </section>
 
+  <!-- 10e — WHAT THE PAGE NOTICED -->
+  <section id="report-sec">
+    <div class="col">
+      <p class="label rise">Quietly keeping score</p>
+      <h2 class="rise d1">What this page noticed.</h2>
+      <div class="report rise d2" id="report"></div>
+      <p class="report-locked rise d2" id="report-locked"></p>
+      <div class="field-row rise d3" style="justify-content:center">
+        <button class="btn" id="film-again" type="button">Play the film again</button>
+      </div>
+    </div>
+  </section>
+
   <!-- 11 — THE END -->
   <section id="finale">
     <div class="col">
@@ -513,6 +526,27 @@
 </div>
 
 <div id="shake-card" aria-hidden="true"><span id="shake-text"></span></div>
+
+<!-- ══════════ THE FILM ══════════ -->
+<div id="midnight" aria-hidden="true">
+  <div class="m-in">
+    <p class="m-now">it is midnight</p>
+    <p class="m-big">28</p>
+    <p class="m-sub">Happy Birthday, Lana</p>
+    <button class="btn" id="m-close" type="button">open it</button>
+  </div>
+</div>
+
+<div id="film" aria-hidden="true">
+  <div class="film-bg"></div>
+  <div class="film-stage">
+    <div class="film-photo" id="film-photo"><img id="film-img" alt="" /></div>
+    <p class="film-line" id="film-line"></p>
+    <h1 class="film-name" id="film-name">LANA</h1>
+    <p class="film-sub" id="film-sub"></p>
+  </div>
+  <button class="film-skip" id="film-skip" type="button">skip</button>
+</div>
 
 <div id="page-nav">
   <button id="page-prev" type="button" aria-label="Previous chapter">&#8249;</button>

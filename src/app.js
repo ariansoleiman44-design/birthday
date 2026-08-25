@@ -371,7 +371,7 @@
       }, 2900);
       setTimeout(function () {
         box.classList.add('gone');
-        resume.offer();
+        if (!film.seen()) film.play(); else resume.offer();
       }, 3700);
       progress.mark('open');
     }
@@ -3399,6 +3399,212 @@
     });
   })();
 
+
+  /* ============================================================
+     THE FILM — plays itself once, the first time she ever opens
+     this, and any time she asks for it again.
+     ============================================================ */
+
+  var film = (function () {
+    var box = $('#film'), photo = $('#film-photo'), img = $('#film-img');
+    var line = $('#film-line'), name = $('#film-name'), sub = $('#film-sub');
+    var KEY = 'lana-2808-film';
+    var timers = [], running = false;
+
+    function at(ms, fn) { timers.push(setTimeout(fn, ms)); }
+    function clearAll() { timers.forEach(clearTimeout); timers = []; }
+
+    function showLine(t) {
+      line.classList.remove('show');
+      at(0, function () {
+        line.innerHTML = t;
+        requestAnimationFrame(function () { line.classList.add('show'); });
+      });
+    }
+    function hideLine() { line.classList.remove('show'); }
+
+    function showPhoto(src) {
+      photo.classList.remove('show', 'drift');
+      img.src = src;
+      requestAnimationFrame(function () {
+        photo.classList.add('show');
+        requestAnimationFrame(function () { photo.classList.add('drift'); });
+      });
+    }
+    function hidePhoto() { photo.classList.remove('show'); }
+
+    function end() {
+      if (!running) return;
+      running = false;
+      clearAll();
+      box.classList.remove('on', 'warm');
+      box.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('is-locked');
+      photo.classList.remove('show', 'drift');
+      line.classList.remove('show'); name.classList.remove('show'); sub.classList.remove('show');
+      try { localStorage.setItem(KEY, '1'); } catch (e) {}
+      progress.mark('film');
+    }
+
+    function play() {
+      if (running) return;
+      running = true;
+      clearAll();
+      var srcs = [];
+      var p = $('.portrait img'); if (p) srcs.push(p.src);
+      $$('.plate img').forEach(function (n) { srcs.push(n.src); });
+      if (!srcs.length) { running = false; return; }
+
+      box.classList.add('on');
+      box.classList.remove('warm');
+      box.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('is-locked');
+      photo.classList.remove('show', 'drift');
+      name.classList.remove('show'); sub.classList.remove('show');
+      line.classList.remove('show');
+
+      sfx.wake();
+      music.arm('birthday');
+
+      var t = 0;
+      // ---- act one: the words ----
+      t += 900;  at(t, function () { showLine('Somebody spent a month on this.'); });
+      t += 3400; at(t, function () { hideLine(); });
+      t += 700;  at(t, function () { showLine('Before you scroll a single thing &mdash;'); });
+      t += 3000; at(t, function () { hideLine(); });
+
+      // ---- act two: her ----
+      t += 800;
+      srcs.slice(0, 5).forEach(function (src, i) {
+        at(t, function () { showPhoto(src); sfx.soft(i + 2); });
+        t += 2600;
+      });
+      at(t, function () { hidePhoto(); });
+
+      // ---- act three: the line, one word at a time ----
+      t += 900;
+      var words = ['You', 'forget', 'everything.', 'So', 'he', 'built', 'you', 'something', 'that', 'does', 'not.'];
+      words.forEach(function (w, i) {
+        at(t, function () {
+          line.classList.remove('show');
+          line.innerHTML = w;
+          requestAnimationFrame(function () { line.classList.add('show'); });
+          if (i % 2 === 0) sfx.soft(i);
+        });
+        t += 480;
+      });
+      t += 900; at(t, function () { hideLine(); });
+
+      // ---- act four: her name ----
+      t += 700;
+      at(t, function () {
+        box.classList.add('warm');
+        name.classList.add('show');
+        sfx.arp();
+        buzz([14, 50, 14, 50, 30]);
+        confetti.petals(26);
+      });
+      t += 2200;
+      at(t, function () { sub.textContent = 'Happy Birthday'; sub.classList.add('show'); });
+      t += 1400; at(t, function () { confetti.fire(2200); });
+      t += 2600; at(t, end);
+    }
+
+    return {
+      start: function () {
+        $('#film-skip').addEventListener('click', end);
+        $('#film-again').addEventListener('click', function () { play(); });
+        box.addEventListener('click', function (e) { if (e.target === box) end(); });
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && running) end();
+        });
+      },
+      seen: function () { try { return !!localStorage.getItem(KEY); } catch (e) { return false; } },
+      play: play
+    };
+  })();
+
+  /* ============================================================
+     MIDNIGHT — if she is holding the page when the day turns
+     ============================================================ */
+
+  var midnight = (function () {
+    var box = $('#midnight'), fired = false, armed = false;
+    function isBirthday() { var d = new Date(); return d.getMonth() === 7 && d.getDate() === 28; }
+    function show() {
+      if (fired) return; fired = true;
+      box.classList.add('on'); box.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('is-locked');
+      music.arm('birthday'); sfx.arp(); confetti.fire(4000);
+      buzz([20, 60, 20, 60, 20, 60, 60]);
+      progress.mark('midnight');
+    }
+    return {
+      start: function () {
+        armed = !isBirthday();         // only meaningful if we start before the day
+        $('#m-close').addEventListener('click', function () {
+          box.classList.remove('on'); box.setAttribute('aria-hidden', 'true');
+          document.body.classList.remove('is-locked');
+        });
+        setInterval(function () {
+          if (armed && isBirthday()) show();
+        }, 20000);
+      }
+    };
+  })();
+
+  /* ============================================================
+     WHAT THE PAGE NOTICED — her own month, read back to her
+     ============================================================ */
+
+  var report = (function () {
+    var host = $('#report'), locked = $('#report-locked');
+
+    function read(k, d) { try { return JSON.parse(localStorage.getItem(k) || d); } catch (e) { return JSON.parse(d); } }
+
+    function render() {
+      var visits = read('lana-2808-visits', '[]');
+      var cal = read('lana-2808-cal', 'null');
+      var diaryLog = read('lana-2808-diary', '[]');
+      var back = read('lana-2808-back', '{"replies":[],"wishes":[]}');
+      var days = streak.days();
+
+      if (visits.length < 3) {
+        host.innerHTML = '';
+        locked.textContent = 'Come back a few more times and this fills itself in. It is already counting.';
+        return;
+      }
+      locked.textContent = '';
+
+      var moods = {};
+      diaryLog.forEach(function (e) { moods[e.m] = (moods[e.m] || 0) + 1; });
+      var M = diary.moods(), top = null, topN = 0;
+      Object.keys(moods).forEach(function (k) { if (moods[k] > topN) { topN = moods[k]; top = +k; } });
+
+      var rows = [];
+      rows.push([visits.length, 'times you have opened this' + (days > 2 ? ', ' + days + ' of them in a row' : '')]);
+      if (cal && cal.opened) rows.push([cal.opened.length, 'chocolates gone']);
+      if (diaryLog.length) rows.push([diaryLog.length, 'days you told it how you were']);
+      if (top !== null) rows.push([topN, 'of those days were <b>' + M[top].label + '</b>']);
+      if (back.wishes && back.wishes.length) rows.push([back.wishes.length, 'wishes in the jar']);
+      if (back.replies && back.replies.length) rows.push([back.replies.length, 'things you wrote back']);
+      rows.push([progress.count(), 'of the hidden things found']);
+
+      host.innerHTML = '';
+      rows.forEach(function (r) {
+        var d = document.createElement('div');
+        d.className = 'report-row';
+        d.innerHTML = '<b>' + r[0] + '</b><span>' + r[1] + '</span>';
+        host.appendChild(d);
+      });
+    }
+    return { start: function () {
+      render();
+      new IntersectionObserver(function (es) { if (es[0].isIntersecting) render(); },
+        { threshold: 0.2 }).observe($('#report-sec'));
+    } };
+  })();
+
   /* ============================================================
      THE SEAL — press and hold for what was never said
      ============================================================ */
@@ -3723,6 +3929,9 @@
   moreLetters.start();
   keeps.start();
   pages.start();
+  film.start();
+  midnight.start();
+  report.start();
   sing.start();
   game.start();
   dayLock.start();
