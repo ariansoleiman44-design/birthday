@@ -1,0 +1,5 @@
+node_modules/
+assets/raw/
+test/shots/
+package-lock.json
+lana-28-august.html

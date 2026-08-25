@@ -1,0 +1,551 @@
+<div id="paper"></div>
+<div id="edge"></div>
+<div id="grain"></div>
+<canvas id="fall"></canvas>
+<div id="prog"></div>
+
+<!-- ══════════ THE ENVELOPE ══════════ -->
+<div id="envelope">
+  <div class="env">
+    <div class="env-back"></div>
+
+    <!-- the card, waiting inside the pocket -->
+    <div class="env-card" id="env-card">
+      <span class="ec-orn" aria-hidden="true"></span>
+      <p class="ec-script">Happy Birthday</p>
+      <p class="ec-name">LANA</p>
+      <p class="ec-date">28 &middot; 08</p>
+    </div>
+
+    <div class="env-front"></div>
+    <div class="env-flap"><p class="env-mono">FOR LANA &middot; 28 &middot; 08</p></div>
+
+    <button id="seal" type="button" aria-label="Break the seal">
+      <span class="seal-disc"><span class="seal-l">L</span></span>
+    </button>
+    <div class="env-hint" id="env-hint">
+      <b>break the seal</b>
+      <i>press it, and pull it down</i>
+      <span class="tug-track"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ THE PAGE ══════════ -->
+<main id="page">
+
+  <!-- 1 — THE CARD -->
+  <section id="card" class="first">
+    <div class="col">
+      <div class="card-plate rise">
+        <svg class="rose-corner a" viewBox="0 0 64 64" aria-hidden="true"><path d="M38 50 C38 57 31 61 22 61" fill="none" stroke="#6E520E" stroke-width="1.5" stroke-linecap="round"/><path d="M31 53 C25 50 20 52 17 56 C23 59 29 57 31 53 Z" fill="#8A9A46"/><path d="M32 22 a7 7 0 1 1 -7 7 a11.5 11.5 0 1 0 11.5 -11.5 a16 16 0 1 1 -16 16" fill="none" stroke="#A8121F" stroke-width="2.6" stroke-linecap="round"/><circle cx="32" cy="29" r="2.4" fill="#C0121F"/></svg>
+        <svg class="rose-corner b" viewBox="0 0 64 64" aria-hidden="true"><path d="M38 50 C38 57 31 61 22 61" fill="none" stroke="#6E520E" stroke-width="1.5" stroke-linecap="round"/><path d="M31 53 C25 50 20 52 17 56 C23 59 29 57 31 53 Z" fill="#8A9A46"/><path d="M32 22 a7 7 0 1 1 -7 7 a11.5 11.5 0 1 0 11.5 -11.5 a16 16 0 1 1 -16 16" fill="none" stroke="#A8121F" stroke-width="2.6" stroke-linecap="round"/><circle cx="32" cy="29" r="2.4" fill="#C0121F"/></svg>
+        <span class="flourish" aria-hidden="true"></span>
+        <p class="script">Happy Birthday</p>
+        <div class="portrait"><img src="__P4__" alt="Lana" decoding="async" /></div>
+        <h1 class="hero-name leaf" id="hero">LANA</h1>
+        <p class="hero-date">Twenty&ndash;Eight August</p>
+        <p class="name-ar" lang="ckb" dir="rtl">&#1604;&#1575;&#1606;&#1575;</p>
+        <button class="cover-swap" id="cover-swap" type="button">change the photo</button>
+      </div>
+      <p class="greeting" id="greeting"></p>
+      <div class="field-row" style="justify-content:center">
+        <button class="btn" id="keep-card" type="button" hidden>Keep the card</button>
+      </div>
+      <p class="soft italic keep-note" id="keep-note"></p>
+      <div class="cue" id="cue"><i></i><span>scroll</span></div>
+    </div>
+  </section>
+
+  <!-- 1b — TODAY: everything she needs on a normal visit, up front -->
+  <section id="today-sec">
+    <div class="col">
+      <p class="label rise" id="today-date">Today</p>
+      <div class="today rise d1">
+        <div class="today-row">
+          <div class="today-choc">
+            <button class="t-choc" id="t-choc" type="button"><span id="t-choc-n">1</span></button>
+          </div>
+          <div class="today-txt">
+            <p class="t-title" id="t-choc-title">Today&rsquo;s chocolate</p>
+            <p class="t-sub" id="t-choc-sub">Unwrap it.</p>
+          </div>
+        </div>
+        <p class="t-note" id="t-note" hidden></p>
+        <hr class="t-rule" />
+        <p class="t-title">How was today?</p>
+        <div class="t-moods" id="t-moods"></div>
+        <p class="t-reply" id="t-reply"></p>
+        <p class="t-streak" id="t-streak"></p>
+      </div>
+      <p class="t-away" id="t-away" hidden></p>
+      <p class="soft italic rise d2 short">
+        The rest is underneath, or in the contents at the top corner.
+      </p>
+    </div>
+  </section>
+
+  <!-- 2 — COUNTDOWN -->
+  <section id="countdown">
+    <div class="col">
+      <p class="label rise" id="cd-label">Until the day</p>
+      <div class="clock rise d1 only-before" id="clock">
+        <div class="unit"><b id="cd-d">00</b><em>days</em></div>
+        <div class="unit"><b id="cd-h">00</b><em>hours</em></div>
+        <div class="unit"><b id="cd-m">00</b><em>min</em></div>
+        <div class="unit"><b id="cd-s">00</b><em>sec</em></div>
+      </div>
+      <div class="only-today rise d1">
+        <p class="script" style="font-size:clamp(2.6rem,13vw,4.4rem)">It&rsquo;s today</p>
+        <p class="soft italic short">Twenty&ndash;four hours, all of them yours.</p>
+      </div>
+      <div class="rule-orn rise d2"></div>
+    </div>
+  </section>
+
+  <!-- 2b — SEALED UNTIL THE DAY -->
+  <section id="day-lock">
+    <div class="col">
+      <p class="label rise" id="lock-label">Not for today</p>
+      <h2 class="rise d1" id="lock-head">One of these does not open yet.</h2>
+      <button class="big-seal rise d2" id="big-seal" type="button">
+        <span class="big-seal-disc">
+          <span class="big-seal-l">28</span>
+          <span class="big-seal-sub" id="lock-timer">&mdash;</span>
+        </span>
+      </button>
+      <p class="soft italic rise d3 short" id="lock-copy">
+        Sealed until the 28th of August. No shaking it, no pressing it, no getting round it.
+      </p>
+      <div class="letter-paper" id="lock-note" hidden>
+        <p class="cal-day">Written for the day itself</p>
+        <p class="cal-text" id="lock-text"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 — THE ROSE -->
+  <section id="rose">
+    <div class="col">
+      <p class="label rise">Six petals</p>
+      <h2 class="rise d1">Take it apart.</h2>
+      <div id="rose-stage" class="rise d2"></div>
+      <p id="rose-say"></p>
+      <p class="secret-hint" id="secret-hint">
+        The seal you broke is down in the corner. Hold it. Don&rsquo;t let go.
+      </p>
+    </div>
+  </section>
+
+  <!-- 4 — HER -->
+  <section id="gallery">
+    <div class="col wide">
+      <p class="label rise">Her</p>
+      <div class="gal" id="gal"></div>
+    </div>
+  </section>
+
+  <!-- 5 — MOVING -->
+  <section id="reel-sec">
+    <div class="col wide">
+      <p class="label rise">Moving</p>
+      <div class="gal" id="reel"></div>
+    </div>
+  </section>
+
+  <!-- 6 — THE MOON -->
+  <section id="tonight">
+    <div class="col">
+      <p class="label rise">Above you, right now</p>
+      <div class="medal rise d1"><canvas id="phase-canvas" aria-hidden="true"></canvas></div>
+      <p class="phase-name rise d2" id="phase-name">&mdash;</p>
+      <p class="phase-lit rise d2" id="phase-lit">&mdash;</p>
+      <p class="phase-day rise d3" id="phase-day"></p>
+    </div>
+  </section>
+
+  <!-- 7 — THE DATE -->
+  <section id="resume-day">
+    <div class="col">
+      <p class="label rise">The 28th of August</p>
+      <ol class="cv rise d1">
+        <li><y>1749</y><t>Goethe is born.</t></li>
+        <li><y>1913</y><t>The Peace Palace opens in The Hague.</t></li>
+        <li><y>1963</y><t>King says he has a dream.</t></li>
+        <li class="you"><y>then</y><t>you &mdash; the part the history books keep leaving out.</t></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- 7b — SCRATCH -->
+  <section id="scratch">
+    <div class="col">
+      <p class="label rise">One line, hidden</p>
+      <h2 class="rise d1">Scratch the gold off.</h2>
+      <div class="scratch-wrap rise d2">
+        <p class="scratch-under" id="scratch-under">
+          Whatever this is &mdash; I am not going anywhere.
+        </p>
+        <canvas id="scratch-canvas"></canvas>
+      </div>
+      <p class="soft italic rise d3" id="scratch-hint">Use your finger. Properly, like a lottery ticket.</p>
+    </div>
+  </section>
+
+  <!-- 8 — THE LETTER -->
+  <section id="letter">
+    <div class="col">
+      <p class="label rise">Unsent until now</p>
+      <div class="letter-paper rise d1">
+        <div id="letter-body"></div>
+        <div class="sign" id="sign">Arian</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8b — THE COUPONS -->
+  <section id="coupons">
+    <div class="col">
+      <p class="label rise">Redeemable, no expiry</p>
+      <h2 class="rise d1">Seven things you can cash in.</h2>
+      <p class="soft italic rise d2 short">Turn them over. They are real, and I will honour every one.</p>
+      <div class="tickets rise d2" id="tickets"></div>
+    </div>
+  </section>
+
+  <!-- 8c — THE RECORD -->
+  <section id="record-sec">
+    <div class="col">
+      <p class="label rise">Side A</p>
+      <h2 class="rise d1">Put something on.</h2>
+      <div class="deck rise d2">
+        <div class="platter" id="platter">
+          <div class="disc" id="disc"><span class="disc-label">L<em>28.08</em></span></div>
+        </div>
+        <div class="tonearm" id="tonearm"><span></span><i></i></div>
+      </div>
+      <div class="tracks rise d3" id="tracks"></div>
+      <p class="soft italic rise d3" id="track-note">
+        The second one is his, not yours &mdash; he knows. Yours is still coming.
+      </p>
+    </div>
+  </section>
+
+  <!-- 8c2 — SING -->
+  <section id="sing-sec">
+    <div class="col">
+      <p class="label rise">You can actually sing</p>
+      <h2 class="rise d1">So sing something.</h2>
+      <p class="soft italic rise d2 short" id="sing-copy">
+        The page will listen and draw it. Nothing is recorded, nothing is sent anywhere &mdash;
+        it only watches the needle move.
+      </p>
+      <div class="stage-bars rise d2">
+        <canvas id="bars"></canvas>
+        <p class="bars-idle" id="bars-idle">the needle is resting</p>
+      </div>
+      <div class="field-row rise d3" style="justify-content:center">
+        <button class="btn solid" id="sing-btn" type="button">Let it listen</button>
+      </div>
+      <p class="sing-say" id="sing-say"></p>
+    </div>
+  </section>
+
+  <!-- 8d — DOES HE KNOW YOU -->
+  <section id="quiz-sec">
+    <div class="col">
+      <p class="label rise">Six questions</p>
+      <h2 class="rise d1">Does he actually know you?</h2>
+      <p class="soft italic rise d2 short">Answer honestly. Then see what he wrote down before you got here.</p>
+      <div class="quiz rise d2" id="quiz"></div>
+      <p class="quiz-score" id="quiz-score"></p>
+    </div>
+  </section>
+
+  <!-- 8e — THE ORACLE -->
+  <section id="oracle-sec">
+    <div class="col">
+      <p class="label rise">Pick one</p>
+      <h2 class="rise d1">Three cards. Take whichever.</h2>
+      <div class="oracle rise d2" id="oracle"></div>
+      <p class="oracle-say" id="oracle-say"></p>
+      <button class="btn ghost rise d3" id="oracle-again" type="button" hidden>shuffle them again</button>
+    </div>
+  </section>
+
+  <!-- 8f — THE GAME -->
+  <section id="game-sec">
+    <div class="col">
+      <p class="label rise">Because you like games</p>
+      <h2 class="rise d1">Catch the chocolate.</h2>
+      <p class="soft italic rise d2 short" id="game-copy">
+        Thirty seconds. Drag the cup. Coffee beans are worth more than they look.
+      </p>
+      <div class="game-wrap rise d2">
+        <canvas id="game"></canvas>
+        <div class="game-hud">
+          <span id="game-score">0</span>
+          <span id="game-time">30</span>
+        </div>
+        <div class="game-over" id="game-over">
+          <p id="game-result"></p>
+          <button class="btn solid" id="game-start" type="button">Start</button>
+          <p class="game-best" id="game-best"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8f2 — MORE LETTERS -->
+  <section id="letters-more">
+    <div class="col">
+      <p class="label rise">Three more</p>
+      <h2 class="rise d1">He kept writing.</h2>
+      <p class="soft italic rise d2 short" id="more-copy"></p>
+      <div class="more-list rise d2" id="more-list"></div>
+      <div class="letter-paper rise d2" id="more-open" hidden style="text-align:left">
+        <p class="cal-day" id="more-when"></p>
+        <p class="cal-text" id="more-body"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8f3 — THINGS YOU SAID / ACROSTIC / HOROSCOPE -->
+  <section id="said-sec">
+    <div class="col">
+      <p class="label rise">On the record</p>
+      <h2 class="rise d1">Things you have actually said.</h2>
+      <ul class="said rise d2" id="said"></ul>
+      <p class="soft italic rise d3 short">He is still collecting these. The list gets longer.</p>
+    </div>
+  </section>
+
+  <section id="acrostic-sec">
+    <div class="col">
+      <p class="label rise">Four letters</p>
+      <h2 class="rise d1">Your name, downwards.</h2>
+      <ol class="acrostic rise d2" id="acrostic"></ol>
+    </div>
+  </section>
+
+  <section id="stars-sec">
+    <div class="col">
+      <p class="label rise">Virgo &middot; 28 August</p>
+      <h2 class="rise d1">Today, according to the sky.</h2>
+      <div class="letter-paper rise d2" style="text-align:left">
+        <p class="cal-day" id="horo-date"></p>
+        <p class="cal-text" id="horo-text"></p>
+        <p class="horo-lucky" id="horo-lucky"></p>
+      </div>
+      <p class="soft italic rise d3 short">Completely made up. Correct anyway.</p>
+    </div>
+  </section>
+
+  <!-- 8g — THE ARCADE -->
+  <section id="arcade">
+    <div class="col wide">
+      <p class="label rise">Ten more</p>
+      <h2 class="rise d1">The arcade.</h2>
+      <div class="arc-tabs rise d2" id="arc-tabs"></div>
+      <div class="arc-stage rise d2" id="arc-stage"></div>
+      <p class="arc-say" id="arc-say"></p>
+    </div>
+  </section>
+
+  <!-- 9 — THE CAKE -->
+  <section id="cake">
+    <div class="col">
+      <p class="label rise">Make a wish</p>
+      <div id="cake-stage" class="rise d1"><canvas id="cake-canvas"></canvas></div>
+      <div class="col rise d2" id="blow-ui" style="gap:.9rem">
+        <p class="soft italic" id="blow-copy">Blow at the screen. It really is listening.</p>
+        <div id="mic-meter"><div id="mic-fill"></div></div>
+        <div class="field-row" style="justify-content:center">
+          <button class="btn solid" id="mic-btn" type="button">Blow them out</button>
+          <button class="btn ghost" id="tap-btn" type="button">or tap</button>
+        </div>
+      </div>
+      <p class="wish" id="wish">Happy Birthday, Lana</p>
+    </div>
+  </section>
+
+  <!-- 10 — WRITE BACK -->
+  <section id="back">
+    <div class="col">
+      <p class="label rise">Your turn</p>
+      <h2 class="rise d1">Say something back.</h2>
+      <div class="letter-paper rise d2" style="padding:1.1rem">
+        <label class="field-label" for="reply-text">To Arian</label>
+        <textarea id="reply-text" rows="4" placeholder="anything. even &ldquo;blah&rdquo;."></textarea>
+        <div class="field-row">
+          <button class="btn solid" id="reply-send" type="button">Send it</button>
+          <button class="btn" id="reply-copy" type="button">Copy it</button>
+        </div>
+        <p class="field-note" id="reply-note"></p>
+      </div>
+      <div class="rule-orn rise d3"></div>
+      <p class="label rise d3">The wish jar</p>
+      <div class="letter-paper rise d3" style="padding:1rem">
+        <input id="wish-text" type="text" placeholder="this year I want&hellip;" />
+        <div class="field-row"><button class="btn" id="wish-add" type="button">Put it in the jar</button></div>
+      </div>
+      <ul class="jar" id="jar"></ul>
+    </div>
+  </section>
+
+  <!-- 10b — THIRTY DAYS -->
+  <section id="calendar-sec">
+    <div class="col">
+      <p class="label rise">One a day</p>
+      <h2 class="rise d1">A box of forty&ndash;six.</h2>
+      <p class="soft italic rise d2 short" id="cal-copy">
+        One a day, unwrapped for you. I am not letting you forget about me.
+      </p>
+      <div class="choc-box rise d2">
+        <span class="choc-box-label">Chocolatier &middot; Arian &middot; No. 28</span>
+        <div class="cal" id="cal"></div>
+      </div>
+      <div class="cal-open" id="cal-open" hidden>
+        <p class="cal-day" id="cal-day"></p>
+        <p class="cal-text" id="cal-text"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10b2 — TIME CAPSULE -->
+  <section id="capsule-sec">
+    <div class="col">
+      <p class="label rise">Locked for a year</p>
+      <h2 class="rise d1">Write to next year&rsquo;s you.</h2>
+      <p class="soft italic rise d2 short" id="capsule-copy">
+        Whatever you say here is sealed until the 28th of August next year. Not even you can open it early.
+      </p>
+      <div class="letter-paper rise d2" id="capsule-write" style="padding:1.1rem">
+        <label class="field-label" for="capsule-text">To Lana, one year from now</label>
+        <textarea id="capsule-text" rows="4" placeholder="what do you want to remember about right now?"></textarea>
+        <div class="field-row">
+          <button class="btn solid" id="capsule-seal" type="button">Seal it</button>
+        </div>
+        <p class="field-note" id="capsule-note"></p>
+      </div>
+      <div class="capsule-locked" id="capsule-locked" hidden>
+        <div class="capsule-seal-art"><span>L</span></div>
+        <p class="t-title" id="capsule-when"></p>
+        <p class="soft italic short" id="capsule-sub"></p>
+        <div class="letter-paper" id="capsule-open" hidden style="padding:1.1rem;text-align:left">
+          <p class="cal-day" id="capsule-date"></p>
+          <p class="cal-text" id="capsule-body"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10c — HOW WAS TODAY -->
+  <section id="diary-sec">
+    <div class="col">
+      <p class="label rise">Once a day</p>
+      <h2 class="rise d1">How was today?</h2>
+      <p class="soft italic rise d2 short" id="diary-copy">
+        One press. I am not asking for a paragraph. It keeps the answer for you.
+      </p>
+      <div class="moods rise d2" id="moods"></div>
+      <p class="mood-say" id="mood-say"></p>
+      <ul class="diary" id="diary"></ul>
+    </div>
+  </section>
+
+  <!-- 10d — KEEPSAKES -->
+  <section id="keep-sec">
+    <div class="col">
+      <p class="label rise">Take it with you</p>
+      <h2 class="rise d1">Things you can keep.</h2>
+      <div class="keeps rise d2" id="keeps"></div>
+      <p class="soft italic keep-note" id="keeps-note"></p>
+      <div class="qr-wrap rise d3">
+        <canvas id="qr"></canvas>
+        <p class="arc-sub">point a camera at it</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 — THE END -->
+  <section id="finale">
+    <div class="col">
+      <p class="script rise" style="font-size:clamp(3.4rem,18vw,6rem)">blah.</p>
+      <div class="rule-orn rise d1"></div>
+      <h3 class="rise d1 short">You&rsquo;ll forget half of this by tomorrow.<br />It&rsquo;ll still be here.</h3>
+      <div class="field-row rise d2" style="justify-content:center">
+        <button class="btn" id="again" type="button">Open it again</button>
+      </div>
+      <div class="reseal rise d2" aria-hidden="true">
+        <div class="reseal-body"></div>
+        <div class="reseal-edge"></div>
+        <div class="reseal-seal">L</div>
+      </div>
+      <p class="soft italic rise d2 short">Sealed again until you come back.</p>
+      <div class="colophon rise d3">
+        <span class="colophon-seal" aria-hidden="true">L</span>
+        <p class="label" style="line-height:2.4">
+          Made by Arian<br />Ahmet Kaya &mdash; Katlime Ferman<br />For Lana &middot; 28.08
+        </p>
+        <p class="colophon-note">Printed once. One copy. There is no second edition.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<canvas id="confetti"></canvas>
+
+<button id="medallion" type="button" aria-label="The seal. Press and hold."><b>L</b><span id="medallion-ring2"></span></button>
+
+<div id="vault" aria-hidden="true">
+  <div class="vault-inner">
+    <p class="label">Never said out loud</p>
+    <h2>You held it long enough.</h2>
+    <ol class="vault-list" id="vault-list"></ol>
+    <button class="btn ghost" id="vault-close" type="button" style="margin-top:1.2rem">seal it again</button>
+  </div>
+</div>
+
+<div id="lightbox" aria-hidden="true">
+  <button id="lightbox-close" type="button" aria-label="close">&times;</button>
+  <img id="lightbox-img" alt="Lana" />
+</div>
+
+<div id="shake-card" aria-hidden="true"><span id="shake-text"></span></div>
+
+<div id="page-nav">
+  <button id="page-prev" type="button" aria-label="Previous chapter">&#8249;</button>
+  <button id="page-next" type="button" aria-label="Next chapter">&#8250;</button>
+</div>
+
+<button id="mode-btn" type="button" aria-label="Day or night"><i></i></button>
+<button id="rain-btn" type="button" aria-label="Rain sound"><i></i></button>
+
+<button id="index-btn" type="button" aria-label="Contents">
+  <span></span><span></span><span></span>
+</button>
+
+<div id="index" aria-hidden="true">
+  <div class="index-inner">
+    <p class="label">Contents</p>
+    <h2>Twenty&ndash;one chapters.</h2>
+    <p class="index-found" id="index-found"></p>
+    <ol class="index-list" id="index-list"></ol>
+    <button class="btn ghost" id="index-close" type="button">close</button>
+  </div>
+</div>
+
+<div id="player" role="button" tabindex="0" aria-label="Toggle music">
+  <span class="eq"><i></i><i></i><i></i></span>
+  <span id="player-label">music</span>
+</div>
+
+<div id="resume">
+  <p>You fell asleep here.</p>
+  <button id="resume-go" type="button">continue</button>
+  <button class="x" id="resume-x" type="button" aria-label="dismiss">&times;</button>
+</div>
+
+<audio id="a-birthday" loop preload="auto" src="__BIRTHDAY__"></audio>
+<audio id="a-kaya" loop preload="auto" src="__KAYA__"></audio>
