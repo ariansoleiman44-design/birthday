@@ -3589,6 +3589,8 @@
       if (back.wishes && back.wishes.length) rows.push([back.wishes.length, 'wishes in the jar']);
       if (back.replies && back.replies.length) rows.push([back.replies.length, 'things you wrote back']);
       rows.push([progress.count(), 'of the hidden things found']);
+      var ans = question.answer();
+      if (ans) rows.push(['&#10022;', 'and when he finally asked, you said <b>' + ans.short + '</b>']);
 
       host.innerHTML = '';
       rows.forEach(function (r) {
@@ -3603,6 +3605,168 @@
       new IntersectionObserver(function (es) { if (es[0].isIntersecting) render(); },
         { threshold: 0.2 }).observe($('#report-sec'));
     } };
+  })();
+
+
+  /* ============================================================
+     ONE QUESTION — she has never had an easy way to answer it,
+     so this is one. Every answer is a safe one.
+     ============================================================ */
+
+  var question = (function () {
+    var lockedEl = $('#q-locked'), askEl = $('#q-ask'), doneEl = $('#q-done');
+    var optsEl = $('#q-opts'), chosenEl = $('#q-chosen'), replyEl = $('#q-reply');
+    var noteEl = $('#q-note'), headEl = $('#q-head');
+    var KEY = 'lana-2808-answer';
+
+    var A = [
+      { id: 'yes', short: 'Yes. It is something.',
+        card: 'Yes.\nIt is something.',
+        reply: 'Then that is the best thing anybody has said to me this year, and it is not close. ' +
+               'Nothing has to change tomorrow. I only wanted to hear it once, from you, out loud.' },
+      { id: 'maybe', short: 'I do not know yet.',
+        card: 'I do not\nknow yet.',
+        reply: 'Good. That is an honest answer and I would rather have it than a kind lie. ' +
+               'There is no clock on this. I am not going anywhere while you work it out.' },
+      { id: 'noname', short: 'Let us not put a name on it.',
+        card: 'Let us not\nput a name on it.',
+        reply: 'Then we will not. It was never the name I was after. ' +
+               'Everything stays exactly as it was &mdash; except now you know, and I am glad you do.' }
+    ];
+
+    function saved() { try { return JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) { return null; } }
+    function find(id) { for (var i = 0; i < A.length; i++) if (A[i].id === id) return A[i]; return null; }
+
+    function showDone(a) {
+      lockedEl.hidden = true; askEl.hidden = true; doneEl.hidden = false;
+      headEl.textContent = 'You answered.';
+      chosenEl.textContent = a.short;
+      replyEl.innerHTML = a.reply;
+    }
+    function showAsk() {
+      lockedEl.hidden = true; doneEl.hidden = true; askEl.hidden = false;
+      headEl.textContent = 'Then I’ll stop.';
+    }
+    function showLocked() {
+      askEl.hidden = true; doneEl.hidden = true; lockedEl.hidden = false;
+      headEl.textContent = 'Then I’ll stop.';
+    }
+
+    function render() {
+      var s2 = saved();
+      if (s2 && find(s2.id)) { showDone(find(s2.id)); return; }
+      if (progress.has('letter')) showAsk(); else showLocked();
+    }
+
+    function cardFor(a) {
+      var W = 1080, H = 1350;
+      var c = document.createElement('canvas'); c.width = W; c.height = H;
+      var x = c.getContext('2d');
+      var g = x.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, '#FFFBF4'); g.addColorStop(0.5, '#F7F1E6'); g.addColorStop(1, '#EFE2CD');
+      x.fillStyle = g; x.fillRect(0, 0, W, H);
+      x.strokeStyle = 'rgba(168,128,28,0.45)'; x.lineWidth = 2; x.strokeRect(46, 46, W - 92, H - 92);
+      x.strokeStyle = 'rgba(168,128,28,0.2)'; x.lineWidth = 1; x.strokeRect(64, 64, W - 128, H - 128);
+
+      x.textAlign = 'center';
+      x.font = '400 28px Jost, sans-serif'; x.fillStyle = '#6E520E';
+      x.fillText('H E   A S K E D', W / 2, 210);
+      x.font = '400 62px Marcellus, serif'; x.fillStyle = '#2E1D11';
+      x.fillText('Is this something?', W / 2, 300);
+
+      x.beginPath(); x.moveTo(W / 2 - 90, 380); x.lineTo(W / 2 + 90, 380);
+      x.strokeStyle = 'rgba(168,128,28,0.45)'; x.lineWidth = 1; x.stroke();
+      x.save(); x.translate(W / 2, 380); x.rotate(Math.PI / 4);
+      x.fillStyle = '#A8801C'; x.fillRect(-5, -5, 10, 10); x.restore();
+
+      x.font = '400 28px Jost, sans-serif'; x.fillStyle = '#6E520E';
+      x.fillText('S H E   S A I D', W / 2, 470);
+
+      var lines = a.card.split('\n');
+      x.font = '400 116px "Pinyon Script", cursive'; x.fillStyle = '#A8121F';
+      lines.forEach(function (l, i) { x.fillText(l, W / 2, 620 + i * 130); });
+
+      x.font = '400 30px Jost, sans-serif'; x.fillStyle = '#6E520E';
+      x.fillText('L A N A   ·   2 8   A U G U S T', W / 2, 1130);
+      x.font = '400 24px Jost, sans-serif'; x.fillStyle = 'rgba(110,82,14,0.7)';
+      x.fillText('F O R   A R I A N', W / 2, 1210);
+      return c;
+    }
+
+    function offerCard(a) {
+      var run = function () {
+        var c = cardFor(a);
+        c.toBlob(function (blob) {
+          if (!blob) return;
+          if (!window.claude || typeof window.claude.use !== 'function') { fallback(c); return; }
+          window.claude.use('downloads').then(function (dl) {
+            if (!dl) { fallback(c); return; }
+            dl.save({ filename: 'lana-answer.png', data: blob }).then(function () {
+              noteEl.textContent = 'Saved. Send it to him whenever you like.';
+              noteEl.classList.add('show'); sfx.chime(6); buzz(8);
+            }, function (err) {
+              if (err && err.code === 'declined') { noteEl.textContent = 'No problem.'; noteEl.classList.add('show'); return; }
+              fallback(c);
+            });
+          }, function () { fallback(c); });
+        }, 'image/png');
+      };
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(run); else run();
+    }
+    function fallback(c) {
+      $('#lightbox-img').src = c.toDataURL('image/png');
+      $('#lightbox').classList.add('open');
+      $('#lightbox').setAttribute('aria-hidden', 'false');
+      document.body.classList.add('is-locked');
+      noteEl.textContent = 'Hold the picture to save it, then send it to him.';
+      noteEl.classList.add('show');
+    }
+
+    function copy(a) {
+      var txt = 'He asked: is this something?\n\nI said: ' + a.short;
+      var done = function () {
+        noteEl.textContent = 'Copied. Paste it to him whenever you are ready.';
+        noteEl.classList.add('show');
+      };
+      function fb() {
+        try {
+          var ta = document.createElement('textarea');
+          ta.value = txt; ta.style.cssText = 'position:fixed;opacity:0;left:-9999px';
+          document.body.appendChild(ta); ta.select();
+          document.execCommand('copy'); document.body.removeChild(ta); done();
+        } catch (e) { noteEl.textContent = 'Your browser will not let me copy it.'; noteEl.classList.add('show'); }
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(done, fb);
+      else fb();
+    }
+
+    return {
+      answer: function () { var s2 = saved(); return s2 ? find(s2.id) : null; },
+      start: function () {
+        A.forEach(function (a) {
+          var b = document.createElement('button');
+          b.type = 'button'; b.className = 'q-opt-btn';
+          b.textContent = a.short;
+          b.addEventListener('click', function () {
+            try { localStorage.setItem(KEY, JSON.stringify({ id: a.id, at: Date.now() })); } catch (e) {}
+            showDone(a);
+            buzz([16, 50, 16]); sfx.heart(2); confetti.petals(20);
+            progress.mark('answered');
+          });
+          optsEl.appendChild(b);
+        });
+        $('#q-card').addEventListener('click', function () { var a = question.answer(); if (a) offerCard(a); });
+        $('#q-copy').addEventListener('click', function () { var a = question.answer(); if (a) copy(a); });
+        $('#q-redo').addEventListener('click', function () {
+          try { localStorage.removeItem(KEY); } catch (e) {}
+          noteEl.classList.remove('show'); showAsk();
+        });
+        render();
+        progress.onChange(render);
+        new IntersectionObserver(function (es) { if (es[0].isIntersecting) render(); },
+          { threshold: 0.2 }).observe($('#question-sec'));
+      }
+    };
   })();
 
   /* ============================================================
@@ -3932,6 +4096,7 @@
   film.start();
   midnight.start();
   report.start();
+  question.start();
   sing.start();
   game.start();
   dayLock.start();
