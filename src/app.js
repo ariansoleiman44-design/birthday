@@ -2397,104 +2397,47 @@
      ============================================================ */
 
   var rain = (function () {
-    var btn = $('#rain-btn'), ac = null, gain = null, on = false, built = false;
+    // A real recording of light rain, trimmed to a seamless 39s loop.
+    // The distant thunder is still synthesised on top, because the
+    // recording has none and she asked for a little.
+    var btn = $('#rain-btn'), el = $('#a-rain');
+    var ac = null, gain = null, src = null, on = false, wired = false;
     var thunderTimer = null;
 
-    // A loop of pure filtered noise sounds like static. Real rain is thousands
-    // of separate impacts, so the droplet transients are baked straight into
-    // the buffer — costs nothing at runtime and is the difference between
-    // "shhh" and "water hitting a window".
-    function rainBuffer(seconds) {
-      // Mono, and no Math.sin/Math.exp inside the sample loops: each droplet is
-      // a recursive resonator with a multiplicative envelope. Naive versions of
-      // this froze a throttled phone for 1.7s when she tapped the button.
-      var sr = ac.sampleRate;
-      var n = Math.floor(sr * seconds);
-      var buf = ac.createBuffer(1, n, sr);
-      var d = buf.getChannelData(0);
-      var i, last = 0;
-
-      for (i = 0; i < n; i++) {
-        var w = Math.random() * 2 - 1;
-        last = (last + 0.02 * w) / 1.02;
-        d[i] = w * 0.35 + last * 2.0;
+    function ctx() {
+      if (!ac) {
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return null;
+        try { ac = new AC(); } catch (e) { ac = null; return null; }
       }
-
-      function ping(at, freq, tau, amp) {
-        var len = Math.min((tau * 5 * sr) | 0, n - at);
-        if (len < 4) return;
-        var wv = 6.283185307 * freq / sr;
-        var c = 2 * Math.cos(wv);
-        var y1 = Math.sin(wv), y2 = 0;          // seeds a clean sine
-        var env = amp, dec = Math.exp(-1 / (tau * sr));
-        for (var j = 0; j < len; j++) {
-          var y = c * y1 - y2;
-          y2 = y1; y1 = y;
-          d[at + j] += y * env;
-          env *= dec;
-        }
-      }
-
-      var drops = (seconds * 34) | 0, k;
-      for (k = 0; k < drops; k++)
-        ping((Math.random() * (n - 2000)) | 0, 900 + Math.random() * 4200,
-             0.004 + Math.random() * 0.020, 0.10 + Math.random() * 0.5);
-
-      var heavy = (seconds * 3) | 0;
-      for (k = 0; k < heavy; k++)
-        ping((Math.random() * (n - 6000)) | 0, 260 + Math.random() * 700,
-             0.03 + Math.random() * 0.04, 0.5);
-
-      var peak = 0;
-      for (i = 0; i < n; i++) { var a = d[i] < 0 ? -d[i] : d[i]; if (a > peak) peak = a; }
-      if (peak > 0) for (i = 0; i < n; i++) d[i] /= peak;
-      return buf;
+      if (ac.state === 'suspended') { try { ac.resume(); } catch (e) {} }
+      return ac;
     }
 
-    function build_() {
-      if (built || !ac) return; built = true;
+    function wire() {
+      if (wired || !ac) return; wired = true;
       gain = ac.createGain(); gain.gain.value = 0.0001; gain.connect(ac.destination);
-
-      var buf = rainBuffer(5);
-
-      // near: the patter on the glass
-      var near = ac.createBufferSource(); near.buffer = buf; near.loop = true;
-      var nhp = ac.createBiquadFilter(); nhp.type = 'highpass'; nhp.frequency.value = 700;
-      var nlp = ac.createBiquadFilter(); nlp.type = 'lowpass'; nlp.frequency.value = 7000;
-      var ng = ac.createGain(); ng.gain.value = 0.34;
-      near.connect(nhp); nhp.connect(nlp); nlp.connect(ng); ng.connect(gain);
-
-      // far: the same rain, softer and duller, slightly detuned by playback rate
-      var far = ac.createBufferSource(); far.buffer = buf; far.loop = true;
-      far.playbackRate.value = 0.82;
-      var flp = ac.createBiquadFilter(); flp.type = 'lowpass'; flp.frequency.value = 1100;
-      var fg = ac.createGain(); fg.gain.value = 0.30;
-      far.connect(flp); flp.connect(fg); fg.connect(gain);
-
-      // the low roar underneath
-      var low = ac.createBufferSource(); low.buffer = buf; low.loop = true;
-      low.playbackRate.value = 0.55;
-      var llp = ac.createBiquadFilter(); llp.type = 'lowpass'; llp.frequency.value = 320;
-      var lg = ac.createGain(); lg.gain.value = 0.20;
-      low.connect(llp); llp.connect(lg); lg.connect(gain);
-
-      // gusts: two slow, unrelated LFOs so it never repeats audibly
-      var l1 = ac.createOscillator(); l1.frequency.value = 0.043;
-      var a1 = ac.createGain(); a1.gain.value = 0.13;
-      l1.connect(a1); a1.connect(ng.gain);
-      var l2 = ac.createOscillator(); l2.frequency.value = 0.017;
-      var a2 = ac.createGain(); a2.gain.value = 0.10;
-      l2.connect(a2); a2.connect(fg.gain);
-      // and a slow sweep on the near filter, like the wind turning
-      var l3 = ac.createOscillator(); l3.frequency.value = 0.029;
-      var a3 = ac.createGain(); a3.gain.value = 900;
-      l3.connect(a3); a3.connect(nlp.frequency);
-
-      near.start(); far.start(); low.start(); l1.start(); l2.start(); l3.start();
+      try {
+        src = ac.createMediaElementSource(el);
+        src.connect(gain);
+      } catch (e) { src = null; }        // fall back to element volume below
       scheduleThunder();
     }
 
-    // distant, and rare. Two parts: the crack, then the roll.
+    function level(v, ms) {
+      if (gain && ac) {
+        var t = ac.currentTime;
+        try {
+          gain.gain.cancelScheduledValues(t);
+          gain.gain.setValueAtTime(Math.max(gain.gain.value, 0.0001), t);
+          gain.gain.exponentialRampToValueAtTime(Math.max(v, 0.0001), t + ms / 1000);
+          return;
+        } catch (e) {}
+      }
+      try { el.volume = clamp(v, 0, 1); } catch (e) {}
+    }
+
+    // distant, and rare — two parts: the crack, then the long roll
     function thunder(close) {
       if (!ac || !on) return;
       var t = ac.currentTime + 0.05;
@@ -2507,64 +2450,49 @@
         last = (last + 0.008 * w) / 1.008;
         d[i] = last * 6;
       }
-      var src = ac.createBufferSource(); src.buffer = b;
+      var s2 = ac.createBufferSource(); s2.buffer = b;
       var lp = ac.createBiquadFilter(); lp.type = 'lowpass';
       lp.frequency.setValueAtTime(close ? 620 : 300, t);
       lp.frequency.exponentialRampToValueAtTime(48, t + dur * 0.8);
       var g = ac.createGain();
-      var peak = close ? 0.30 : 0.13;
+      var peak = close ? 0.26 : 0.11;
       g.gain.setValueAtTime(0.0001, t);
       g.gain.exponentialRampToValueAtTime(peak, t + (close ? 0.10 : 0.5));
       g.gain.exponentialRampToValueAtTime(peak * 0.45, t + dur * 0.35);
       g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-      src.connect(lp); lp.connect(g); g.connect(gain);
-      src.start(t); src.stop(t + dur + 0.1);
+      s2.connect(lp); lp.connect(g); g.connect(ac.destination);
+      s2.start(t); s2.stop(t + dur + 0.1);
     }
 
     function scheduleThunder() {
       clearTimeout(thunderTimer);
-      var wait = 38000 + Math.random() * 62000;      // rare on purpose
+      var wait = 42000 + Math.random() * 68000;
       thunderTimer = setTimeout(function () {
-        if (on) thunder(Math.random() < 0.25);        // mostly distant
+        if (on) thunder(Math.random() < 0.22);
         scheduleThunder();
       }, wait);
-    }
-
-    function ctx() {
-      if (!ac) {
-        var AC = window.AudioContext || window.webkitAudioContext;
-        if (!AC) return null;
-        try { ac = new AC(); } catch (e) { ac = null; }
-      }
-      if (ac && ac.state === 'suspended') { try { ac.resume(); } catch (e) {} }
-      return ac;
-    }
-
-    function level(v, ms) {
-      if (!ac || !gain) return;
-      var t = ac.currentTime;
-      try {
-        gain.gain.cancelScheduledValues(t);
-        gain.gain.setValueAtTime(Math.max(gain.gain.value, 0.0001), t);
-        gain.gain.exponentialRampToValueAtTime(Math.max(v, 0.0001), t + ms / 1000);
-      } catch (e) {}
     }
 
     return {
       start: function () {
         btn.addEventListener('click', function () {
-          if (!ctx()) return;
-          build_();
+          ctx(); wire();
           on = !on;
-          level(on ? 0.38 : 0.0001, on ? 1800 : 800);
+          if (on) {
+            var p = el.play(); if (p && p.catch) p.catch(function () {});
+            level(0.55, 1800);
+            setTimeout(function () { if (on) thunder(false); }, 8000);
+          } else {
+            level(0.0001, 800);
+            setTimeout(function () { if (!on) { try { el.pause(); } catch (e) {} } }, 900);
+          }
           btn.classList.toggle('on', on);
           buzz(5);
           progress.mark('rain');
-          if (on) setTimeout(function () { if (on) thunder(false); }, 7000);
         });
       },
       show: function () { btn.classList.add('show'); },
-      duck: function (yes) { if (on) level(yes ? 0.07 : 0.38, 400); },
+      duck: function (yes) { if (on) level(yes ? 0.10 : 0.55, 400); },
       isOn: function () { return on; }
     };
   })();
