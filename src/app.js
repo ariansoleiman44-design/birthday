@@ -2151,6 +2151,12 @@
       ['game-sec', 'Catch the Chocolate', 'game'],
       ['cake', 'The Cake', 'cake'],
       ['back', 'Your Turn', 'reply'],
+      ['openwhen-sec', 'Open When…', 'openwhen'],
+      ['seen-sec', 'What I See In You', null],
+      ['noticed-sec', 'You Thought Nobody Noticed', 'noticed'],
+      ['remind-sec', 'Remind Me Of Us', 'remind'],
+      ['strangers-sec', 'If We Ever Become Strangers', 'strangers'],
+      ['question-sec', 'One Question', 'answered'],
       ['calendar-sec', 'The Box of Thirty', 'choc'],
       ['diary-sec', 'How Was Today', 'mood'],
       ['finale', 'The End', null]
@@ -3769,6 +3775,259 @@
     };
   })();
 
+
+  /* ============================================================
+     OPEN WHEN — some of these know what time it is
+     ============================================================ */
+
+  var openWhen = (function () {
+    var grid = $('#ow-grid'), box = $('#ow-open'), whenEl = $('#ow-when'), bodyEl = $('#ow-body');
+    var KEY = 'lana-2808-ow';
+    var L = [
+      { k: 'sad', t: 'you are sad',
+        b: 'Not the big kind necessarily. The flat kind, where nothing is wrong and nothing is right either.\n\n' +
+           'You do not have to explain it to anybody, including me. It does not need a reason to be real.\n\n' +
+           'Do the smallest thing. Water, a window, one message to one person. Not because it fixes it — ' +
+           'because you are worth the small effort even on the days you do not think so.\n\n' +
+           'It passes. It always has. I have watched it pass before.' },
+      { k: 'sleep', t: 'you cannot sleep', gate: 'night',
+        b: 'Of course you cannot. It is you.\n\n' +
+           'Stop trying to win. Nobody has ever fallen asleep by concentrating harder on it.\n\n' +
+           'Whatever you are running through at this hour is louder than it is true. Three in the morning ' +
+           'is a liar and it always has been.\n\n' +
+           'Put the phone down after this. Look at the ceiling. Think about rain. I am probably awake too.' },
+      { k: 'miss', t: 'you miss me',
+        b: 'Good. That is fair, because it goes both ways and I am worse at hiding it.\n\n' +
+           'You are allowed to say it out loud. To me, specifically. You do not have to dress it up as ' +
+           'something casual first.\n\n' +
+           'And if you would rather not say it — fine. Read this instead and know it was already written down ' +
+           'before you needed it.' },
+      { k: 'alone', t: 'you feel alone',
+        b: 'Feeling alone and being alone are two different things, and tonight you have got the first one.\n\n' +
+           'Here is the plain fact: there is a person who built an entire month of small things for you before ' +
+           'you asked for any of it. That is not nothing, and it did not stop when you closed the page.\n\n' +
+           'You are carried around in somebody’s head all day. You just cannot see it from in there.' },
+      { k: 'beautiful', t: 'you forget how beautiful you are',
+        b: 'You will not believe me, so I will not argue.\n\n' +
+           'I will only say this: it was never mainly about your face. It is the way you laugh before the ' +
+           'joke lands. It is you sending "Morning" at an hour that is not morning. It is the fact that ' +
+           'you are kind when there is nothing in it for you.\n\n' +
+           'The face is a bonus. Go and look again anyway.' },
+      { k: 'angry', t: 'you are angry at me',
+        b: 'Then I have probably earned it, and you should say so.\n\n' +
+           'I would rather have you annoyed and honest than pleasant and gone. Do not go quiet on me to be ' +
+           'polite. Tell me what I did.\n\n' +
+           'I am not going anywhere over an argument. I did not build all this to fold at the first hard ' +
+           'conversation.' },
+      { k: 'push', t: 'you need to get up and do something',
+        b: 'You are not lazy. You are tired, and those are not the same thing.\n\n' +
+           'Pick the smallest version of the thing. Not the whole thing — the first two minutes of it. ' +
+           'That is the entire trick and there is nothing else to it.\n\n' +
+           'You are far more capable than the version of you that talks in your head at night. I have seen ' +
+           'the evidence. She has not.' },
+      { k: 'meant', t: 'you finally understand what you meant to me', gate: 'day30',
+        b: 'If you are reading this, a month has gone by and you are still here.\n\n' +
+           'So here it is without the packaging: you were not a phase, or a distraction, or somebody I was ' +
+           'passing time with. You were the person I checked for first and thought about last.\n\n' +
+           'I did not build this to convince you of anything. I built it so that on some ordinary day years ' +
+           'from now, you would be able to prove to yourself that it was real.\n\n' +
+           'It was real. All of it.' }
+    ];
+
+    function read() { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return []; } }
+    function days() {
+      try {
+        var st = JSON.parse(localStorage.getItem('lana-2808-cal') || 'null');
+        if (!st || !st.start) return 1;
+        var x = new Date(); x.setHours(0, 0, 0, 0);
+        return Math.floor((x.getTime() - st.start) / 86400000) + 1;
+      } catch (e) { return 1; }
+    }
+    function allowed(l) {
+      if (l.gate === 'night') { var h = new Date().getHours(); return h >= 0 && h < 5; }
+      if (l.gate === 'day30') return days() >= 30;
+      return true;
+    }
+    function label(l) {
+      if (allowed(l)) return read().indexOf(l.k) === -1 ? 'sealed' : 'read';
+      if (l.gate === 'night') return 'after midnight';
+      return 'day 30';
+    }
+
+    function render() {
+      grid.innerHTML = '';
+      L.forEach(function (l) {
+        var ok = allowed(l), was = read().indexOf(l.k) !== -1;
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'ow-item' + (ok ? '' : ' locked') + (was ? ' read' : '');
+        b.innerHTML = '<span class="ow-env"></span><b>Open when ' + l.t + '</b><em>' + label(l) + '</em>';
+        if (ok) b.addEventListener('click', function () {
+          var r = read(); if (r.indexOf(l.k) === -1) { r.push(l.k); try { localStorage.setItem(KEY, JSON.stringify(r)); } catch (e) {} }
+          box.hidden = false;
+          whenEl.textContent = 'Open when ' + l.t;
+          bodyEl.textContent = l.b;
+          sfx.crack(); buzz(8); progress.mark('openwhen');
+          render();
+        });
+        grid.appendChild(b);
+      });
+    }
+    return { start: render };
+  })();
+
+  /* ============================================================
+     WHAT I SEE IN YOU — about her, not about him
+     ============================================================ */
+
+  (function seen() {
+    var host = $('#seen-list');
+    var S = [
+      ['What makes you you',
+       'You are funny before you are anything else. Not performed funny — the accidental kind, where you ' +
+       'say one flat word like <b>blah</b> and it is somehow the whole joke. People spend years trying to ' +
+       'be that and you do it half asleep.'],
+      ['What I admire',
+       'You are kind in the way that costs something. Anybody can be nice when it is easy. You check on ' +
+       'people when you are tired, which is a different thing entirely.'],
+      ['What I hope you never change',
+       'That you still get excited about small things. Rain. The moon. A chocolate. A photo of a sky. ' +
+       'Most people lose that by your age and pretend they meant to.'],
+      ['What I hope life gives you',
+       'Mornings you are not dreading. Somebody who notices when you go quiet. Enough money that you never ' +
+       'have to think twice at a jewellery counter. And a proper long sleep, uninterrupted, at least once a week.'],
+      ['What I see that you do not',
+       'You think you are forgetful and late and difficult. What is actually true is that you are the person ' +
+       'everyone tells things to. That does not happen by accident. People do not confide in the difficult one.'],
+      ['The part nobody sees',
+       'You are much harder on yourself than anybody else would ever dare to be. I wish you would speak to ' +
+       'yourself the way you speak to the people you love. You would be unstoppable and slightly unbearable.']
+    ];
+    S.forEach(function (x) {
+      var li = document.createElement('li');
+      li.innerHTML = '<h3>' + x[0] + '</h3><p>' + x[1] + '</p>';
+      host.appendChild(li);
+    });
+  })();
+
+  /* ============================================================
+     YOU THOUGHT NOBODY NOTICED
+     ============================================================ */
+
+  (function noticed() {
+    var host = $('#noticed'), say = $('#noticed-say');
+    var N = [
+      'You say <b>blah</b> when you have a real answer and cannot be bothered to dress it up. It is never actually nothing.',
+      'You send <b>Morning</b> at hours that are not morning, and you have never once acknowledged this.',
+      'You sleep holding that blue one. I noticed, and I have said nothing about it until now.',
+      'You go quiet before you go sad. The quiet always comes first. I have learnt to watch for it.',
+      'You look at the sky more than anybody I know. Not at anything in it. Just at it.',
+      'Rain puts you in a good mood. Actual weather changes your entire personality and you think that is normal.',
+      'You forget what you said an hour ago but you remember what somebody else said weeks later. That is not bad memory. That is where your attention goes.',
+      'You sing when you think nobody is listening, and you are much better than you let on.',
+      'You choose the same colours over and over. White, orange, black, red. You have a whole palette and you do not know it.',
+      'You say you do not like a fuss and then you go very quiet and very pleased when somebody makes one.'
+    ];
+    N.forEach(function (t, i) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'n-chip';
+      b.textContent = (i + 1 < 10 ? '0' : '') + (i + 1);
+      b.addEventListener('click', function () {
+        $$('.n-chip').forEach(function (c) { c.classList.remove('on'); });
+        b.classList.add('on');
+        say.classList.remove('show');
+        setTimeout(function () { say.innerHTML = t; say.classList.add('show'); }, 120);
+        buzz(5); sfx.chime(i); progress.mark('noticed');
+      });
+      host.appendChild(b);
+    });
+  })();
+
+  /* ============================================================
+     REMIND ME OF US — a different thing every time
+     ============================================================ */
+
+  (function remind() {
+    var stage = $('#remind-stage'), btn = $('#remind-btn');
+    var last = -1;
+
+    function pool() {
+      var out = [];
+      $$('.plate img').forEach(function (n) { out.push({ kind: 'photograph', img: n.src }); });
+      var p = $('.portrait img'); if (p) out.push({ kind: 'photograph', img: p.src });
+      $$('.clip video, .plate video').forEach(function (v) { out.push({ kind: 'six seconds', vid: v.currentSrc || v.src }); });
+      [
+        'You say “blah” like it is a full sentence. Somehow I always understand it.',
+        'You forget everything except the things that actually matter.',
+        'Rain makes you happy, and that tells me everything about who you are.',
+        'None of this was planned. It happened like somebody arranged it.',
+        'One rose. Not a bouquet. A bouquet is for people you are trying to impress.',
+        'You are the only person who can say one word and fix an entire day.',
+        'I check whether you are online more times a day than I would ever admit.',
+        'Whatever this is — I am not going anywhere.'
+      ].forEach(function (t) { out.push({ kind: 'something he wrote', text: t }); });
+      return out;
+    }
+
+    function show() {
+      var list = pool();
+      if (!list.length) return;
+      var i = Math.floor(rand(0, list.length));
+      if (list.length > 1) { var g = 0; while (i === last && g++ < 8) i = Math.floor(rand(0, list.length)); }
+      last = i;
+      var it = list[i];
+      stage.innerHTML = '';
+      var k = document.createElement('p'); k.className = 'remind-kind'; k.textContent = it.kind;
+      stage.appendChild(k);
+      if (it.img) {
+        var im = document.createElement('img'); im.src = it.img; im.alt = 'Lana';
+        stage.appendChild(im);
+      } else if (it.vid) {
+        var v = document.createElement('video');
+        v.src = it.vid; v.muted = true; v.loop = true; v.playsInline = true; v.autoplay = true;
+        stage.appendChild(v);
+        var pr = v.play(); if (pr && pr.catch) pr.catch(function () {});
+      } else {
+        var t = document.createElement('p'); t.textContent = it.text;
+        stage.appendChild(t);
+      }
+      buzz(5); sfx.chime(i); progress.mark('remind');
+    }
+
+    btn.addEventListener('click', show);
+    var first = document.createElement('p');
+    first.className = 'remind-kind'; first.textContent = 'press the button';
+    stage.appendChild(first);
+  })();
+
+  /* ============================================================
+     IF WE EVER BECOME STRANGERS
+     ============================================================ */
+
+  (function strangers() {
+    var seal = $('#strangers-seal'), note = $('#strangers-note'), body = $('#strangers-body');
+    var hint = $('#strangers-hint');
+    var TEXT =
+      'I hope this one never becomes useful.\n\n' +
+      'But people drift, and lives move, and it would be dishonest to build all of this and pretend that ' +
+      'could never happen to us.\n\n' +
+      'So: if we end up strangers one day — if we stop talking, or something goes wrong, or life simply ' +
+      'takes us in different directions — I do not want you to remember me with any weight attached.\n\n' +
+      'No guilt. You will not owe me anything. You never did.\n\n' +
+      'I would only want you to remember that for some part of your life there was somebody who paid ' +
+      'proper attention. Who knew that you say blah, and go quiet before you go sad, and look at the sky ' +
+      'for no reason. Who thought all of that was worth writing down.\n\n' +
+      'That version of you existed, and somebody saw her clearly, and was glad about it.\n\n' +
+      'That does not stop being true, whatever happens next.';
+    seal.addEventListener('click', function () {
+      seal.classList.add('spent');
+      note.hidden = false;
+      body.textContent = TEXT;
+      hint.textContent = '';
+      sfx.heart(2); buzz([14, 60, 14]); progress.mark('strangers');
+    });
+  })();
+
   /* ============================================================
      THE SEAL — press and hold for what was never said
      ============================================================ */
@@ -4097,6 +4356,7 @@
   midnight.start();
   report.start();
   question.start();
+  openWhen.start();
   sing.start();
   game.start();
   dayLock.start();
