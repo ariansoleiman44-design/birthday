@@ -16,19 +16,20 @@
      definitely known to love, plus the metal that suits them */
   --ivory:     var(--s2);   /* latte cream */
   --ivory-2:   var(--s3);
-  --ink:       #2E1D11;   /* espresso */
-  --ink-soft:  #6B4A31;   /* coffee */
-  --ink-faint: #9C7C5E;   /* foam */
+  /* her own two swatches: Chocolaty Brown for the ink, Cream for the page */
+  --ink:       #3D2317;
+  --ink-soft:  #6A452C;
+  --ink-faint: #97795A;
   /* four paper surfaces, so the entire page can turn to night at once */
-  --s1: #FFFBF4;
-  --s2: #F2E7D3;
-  --s3: #EFE2CD;
-  --s4: #E9D8BB;
-  --veil: rgba(247,241,230,.93);
+  --s1: #FAF2E1;
+  --s2: #EFE1C6;
+  --s3: #EADBBB;
+  --s4: #DFCBA3;
+  --veil: rgba(243,232,208,.94);
 
-  --cocoa:     #5A3620;
-  --cocoa-hi:  #8B5A38;
-  --cocoa-lo:  #3A2113;
+  --cocoa:     #3D2317;
+  --cocoa-hi:  #7A4E31;
+  --cocoa-lo:  #2A1710;
   --cream:     var(--s3);
 
   --gold:      #A8801C;
@@ -2252,3 +2253,40 @@ html[data-mode="night"] #letter-body{ color:var(--ink); }
   opacity:0; transition:opacity 1.2s var(--ease);
 }
 .mirror-close.show{ opacity:1; }
+
+/* ============================================================
+   HER BOARD — her own notes, with an answer pinned beside each
+   ============================================================ */
+
+.board{ display:grid; gap:.7rem; width:100%; }
+.note{
+  position:relative; text-align:left;
+  padding:1rem 1.1rem;
+  background:linear-gradient(168deg,var(--s1),var(--s3));
+  border:1px solid var(--gold-thin);
+  box-shadow:0 .5rem 1.4rem rgba(61,35,23,.10);
+  display:grid; gap:.55rem;
+}
+.note::before{
+  content:''; position:absolute; left:50%; top:-.42rem; transform:translateX(-50%);
+  width:.84rem; height:.84rem; border-radius:50%;
+  background:radial-gradient(circle at 34% 28%, #D8323F, #A8121F 55%, #7C0812);
+  box-shadow:0 .15rem .3rem rgba(61,35,23,.3);
+}
+.note-hers{
+  font-family:var(--f-body); font-style:italic;
+  font-size:1.02rem; line-height:1.5; color:var(--ink-soft);
+  border-left:2px solid var(--gold-line); padding-left:.8rem;
+}
+.note-his{
+  font-family:var(--f-body); font-size:1.06rem; line-height:1.65; color:var(--ink);
+}
+.note-his b{ font-weight:400; color:var(--rose); }
+.note-tag{
+  font-family:var(--f-ui); font-weight:300; font-size:.5rem;
+  letter-spacing:.28em; text-transform:uppercase; color:var(--gold-lo);
+}
+.sabr{
+  font-family:'Amiri', serif; font-size:clamp(2rem,9vw,3rem);
+  color:var(--gold); line-height:1.2; margin-top:.2rem;
+}

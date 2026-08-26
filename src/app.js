@@ -2157,6 +2157,7 @@
       ['remind-sec', 'Remind Me Of Us', 'remind'],
       ['strangers-sec', 'If We Ever Become Strangers', 'strangers'],
       ['pass-sec', 'Four Words', 'password'],
+      ['board-sec', 'The Girl At That Desk', null],
       ['mirror-sec', 'The Most Beautiful Thing', 'mirror'],
       ['garden-sec', 'The Garden', null],
       ['future-sec', 'Letters With Dates', null],
@@ -3934,6 +3935,13 @@
            'That is the entire trick and there is nothing else to it.\n\n' +
            'You are far more capable than the version of you that talks in your head at night. I have seen ' +
            'the evidence. She has not.' },
+      { k: 'enough', t: 'you feel you are not enough',
+        b: 'You wrote this one down yourself, long before I ever saw it. So you already know the feeling well.\n\n' +
+           'Here is the only argument I have, and it is not a compliment — it is evidence.\n\n' +
+           'You taught yourself a second language out of books. You set yourself six goals and not one of them ' +
+           'was selfish. You got up on the days it was pointless.\n\n' +
+           'Not-enough people do not do any of that. They cannot. You have simply never been allowed to be ' +
+           'the judge in your own case.' },
       { k: 'meant', t: 'you finally understand what you meant to me', gate: 'day30',
         b: 'If you are reading this, a month has gone by and you are still here.\n\n' +
            'So here it is without the packaging: you were not a phase, or a distraction, or somebody I was ' +
@@ -4457,6 +4465,56 @@
         });
       }
     };
+  })();
+
+
+  /* ============================================================
+     HER BOARD — every line here is quoted from the board she made
+     for herself. Nothing invented; only answered.
+     ============================================================ */
+
+  (function board() {
+    var host = $('#board'), end = $('#board-end');
+    var B = [
+      { tag: 'you wrote', hers: '“I worried about… not being good enough.”',
+        his: 'You wrote that on a wall, above a desk covered in books you were teaching yourself from. ' +
+             'Nobody who is not good enough does that. <b>Not-good-enough people do not build a desk like that.</b>' },
+      { tag: 'you wrote', hers: '“I used to… feel like I’m not enough. Compare myself.”',
+        his: 'You compare your inside to other people’s outside, which is a rigged game and you always lose it. ' +
+             'I have seen the inside. It is kinder and harder-working than most of the outsides you are measuring it against.' },
+      { tag: 'your goals', hers: '“Finish Quran. Become a teacher. Write a novel. Help my family. Travel the world. Make my parents proud.”',
+        his: 'Six things, and not one of them is about being admired. Every single one is about giving something back. ' +
+             '<b>That list tells me more about you than any photograph.</b>' },
+      { tag: 'the books', hers: 'Second Language Acquisition · English Grammar in Use · Teaching by Principles',
+        his: 'You are going to be a very good teacher. Not because of the books — because you are the person ' +
+             'people already come to when they do not understand something and are embarrassed about it.' },
+      { tag: 'you were proud of', hers: '“Not giving up. Always trying. Caring deeply. Having a big heart.”',
+        his: 'You listed caring deeply as an achievement, and you were right to. Most people file it under weakness ' +
+             'and spend years training it out of themselves. Do not.' },
+      { tag: 'on the wall', hers: 'Sabr · صبر',
+        his: 'Patience, and the harder half of it: staying decent while you wait. You have had more practice at ' +
+             'that than anyone your age should have needed.' },
+      { tag: 'the black note', hers: '“Even on the hardest days, I still got up and tried.”',
+        his: 'This is the one I keep going back to. Not the goals, not the dreams. <b>This.</b> ' +
+             'You got up. On the days it was pointless, you got up anyway. That is the entire thing.' },
+      { tag: 'you reminded yourself', hers: '“You are stronger than you think. Your pain has a purpose. You’re going to make it.”',
+        his: 'You wrote those to a version of yourself who needed them and could not hear them from anybody else. ' +
+             'So here they are from outside your own head, where they are easier to believe: ' +
+             '<b>all four of them are true, and you are already making it.</b>' }
+    ];
+
+    B.forEach(function (n) {
+      var d = document.createElement('div');
+      d.className = 'note';
+      d.innerHTML = '<span class="note-tag">' + n.tag + '</span>' +
+                    '<p class="note-hers">' + n.hers + '</p>' +
+                    '<p class="note-his">' + n.his + '</p>' +
+                    (n.tag === 'on the wall' ? '<p class="sabr">صبر</p>' : '');
+      host.appendChild(d);
+    });
+
+    end.innerHTML = 'You called that board <i>The Old Me</i>. I have met the new one. ' +
+                    'She is the same person, only less frightened — and I liked the first one too.';
   })();
 
   /* ============================================================
