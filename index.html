@@ -4399,12 +4399,12 @@ html[data-mode="night"] #letter-body{ color:var(--ink); }
       render: render,
       keep: keep,
       start: function () {
-        if (!window.claude || typeof window.claude.use !== 'function') return;
-        window.claude.use('downloads').then(function (dl) {
-          if (!dl) return;
-          btn.hidden = false;
-          btn.addEventListener('click', keep);
-        }, function () {});
+        // The button used to appear only inside the artifact host, so on the
+        // public link it was invisible. It is always shown now; without the
+        // downloads capability `keep` falls back to showing the picture to
+        // hold and save, which works everywhere.
+        btn.hidden = false;
+        btn.addEventListener('click', keep);
       }
     };
   })();
