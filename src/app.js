@@ -284,6 +284,17 @@
       el.classList.add('playing');
     }
     return {
+      // MUST be called synchronously inside a real tap/click. Creating or
+      // resuming an AudioContext from a setTimeout is not a user gesture, so
+      // the context stays suspended and — because createMediaElementSource
+      // reroutes the element through the graph — the result is total silence
+      // with no error anywhere.
+      prime: function () {
+        graph();
+        if (ac && ac.state === 'suspended') { try { ac.resume(); } catch (e) {} }
+        try { window.__ctxProbe = ac ? ac.state : 'no-context'; } catch (e) {}
+      },
+      ctxState: function () { return ac ? ac.state : 'no-context'; },
       arm: function (key) {
         if (armed) { play(key); return; }
         armed = true; on = true; el.classList.add('show'); graph(); play(key);
@@ -320,6 +331,7 @@
       dragging = true; startY = pt(e); pulled = 0;
       seal.classList.add('tugging');
       sfx.wake();
+      music.prime();          // inside the gesture, while it still counts
       hint.classList.add('dim');
       if (e.cancelable) e.preventDefault();
     }
@@ -340,6 +352,7 @@
     function open() {
       if (done) return; done = true;
       dragging = false;
+      music.prime();          // and again here, for the plain-click path
       seal.classList.add('broken');
       sfx.crack();
       buzz([14, 40, 20]);
@@ -4749,6 +4762,19 @@
   /* ============================================================
      BOOT
      ============================================================ */
+
+  // a safety net: whatever she touches first, unlock audio while it is a gesture
+  (function primeOnFirstTouch() {
+    var done = false;
+    var go = function () {
+      if (done) return; done = true;
+      try { music.prime(); } catch (e) {}
+      try { sfx.wake(); } catch (e) {}
+    };
+    ['pointerdown', 'touchstart', 'keydown'].forEach(function (ev) {
+      document.addEventListener(ev, go, { once: true, passive: true, capture: true });
+    });
+  })();
 
   fall.start();
   confetti.start();
