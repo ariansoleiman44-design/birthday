@@ -1397,22 +1397,22 @@
     var Q = [
       { ask: 'Which flower is yours?',
         opts: ['A rose', 'A tulip', 'A daisy', 'A lily'], right: 0,
-        said: 'He said a rose. One, not a bouquet.' },
+        said: 'A rose. One, not a bouquet.' },
       { ask: 'Your colours are…',
         opts: ['Blue and silver', 'White, orange, black, red', 'Pink and cream', 'Green and gold'], right: 1,
-        said: 'He said white, orange, black and red. Everything you have been looking at is made of them.' },
+        said: 'White, orange, black, red. This whole page is made of them.' },
       { ask: 'The word you say constantly.',
         opts: ['Yalla', 'Hmm', 'Blah', 'Whatever'], right: 2,
-        said: 'He said &ldquo;blah&rdquo;. He also said it fixes his whole day.' },
+        said: '&ldquo;Blah&rdquo;. He said it fixes his whole day.' },
       { ask: 'What are you always looking at?',
         opts: ['The moon', 'Your phone', 'The mirror', 'The road'], right: 0,
-        said: 'He said the moon. And the sky, and the rain.' },
+        said: 'The moon. Obviously.' },
       { ask: 'Whose voice do you keep going back to?',
         opts: ['Sezen Aksu', 'Ahmet Kaya', 'Ibrahim Tatlises', 'Tarkan'], right: 1,
-        said: 'He said Ahmet Kaya. It is playing further up this page.' },
+        said: 'Ahmet Kaya. It is playing further up.' },
       { ask: 'The thing you are worst at.',
         opts: ['Being on time', 'Remembering anything', 'Sitting still', 'Choosing food'], right: 1,
-        said: 'He said you forget everything. Then he built you a page that does not.' }
+        said: 'You forget everything. So he built a page that does not.' }
     ];
     var answered = 0, right = 0;
 
@@ -3839,60 +3839,41 @@
     var KEY = 'lana-2808-ow';
     var L = [
       { k: 'sad', t: 'you are sad',
-        b: 'Not the big kind necessarily. The flat kind, where nothing is wrong and nothing is right either.\n\n' +
-           'You do not have to explain it to anybody, including me. It does not need a reason to be real.\n\n' +
-           'Do the smallest thing. Water, a window, one message to one person. Not because it fixes it — ' +
-           'because you are worth the small effort even on the days you do not think so.\n\n' +
-           'It passes. It always has. I have watched it pass before.' },
+        b: 'Not the big kind. The flat kind, where nothing is wrong and nothing is right either.\n\n' +
+           'It does not need a reason to be real, and you do not have to explain it to anybody.\n\n' +
+           'Do the smallest thing. Water. A window. It passes. I have watched it pass before.' },
       { k: 'sleep', t: 'you cannot sleep', gate: 'night',
         b: 'Of course you cannot. It is you.\n\n' +
-           'Stop trying to win. Nobody has ever fallen asleep by concentrating harder on it.\n\n' +
-           'Whatever you are running through at this hour is louder than it is true. Three in the morning ' +
-           'is a liar and it always has been.\n\n' +
-           'Put the phone down after this. Look at the ceiling. Think about rain. I am probably awake too.' },
+           'Whatever you are running through at this hour is louder than it is true. ' +
+           'Three in the morning is a liar.\n\n' +
+           'Put the phone down. Think about rain. I am probably awake too.' },
       { k: 'miss', t: 'you miss me',
-        b: 'Good. That is fair, because it goes both ways and I am worse at hiding it.\n\n' +
-           'You are allowed to say it out loud. To me, specifically. You do not have to dress it up as ' +
-           'something casual first.\n\n' +
-           'And if you would rather not say it — fine. Read this instead and know it was already written down ' +
-           'before you needed it.' },
+        b: 'Good. It goes both ways and I am worse at hiding it.\n\n' +
+           'You are allowed to just say it. You do not have to make it sound casual first.' },
       { k: 'alone', t: 'you feel alone',
-        b: 'Feeling alone and being alone are two different things, and tonight you have got the first one.\n\n' +
-           'Here is the plain fact: there is a person who built an entire month of small things for you before ' +
-           'you asked for any of it. That is not nothing, and it did not stop when you closed the page.\n\n' +
-           'You are carried around in somebody’s head all day. You just cannot see it from in there.' },
+        b: 'Feeling alone and being alone are different, and tonight you have the first one.\n\n' +
+           'Somebody built you a month of small things before you asked. That did not stop when you closed the page.' },
       { k: 'beautiful', t: 'you forget how beautiful you are',
         b: 'You will not believe me, so I will not argue.\n\n' +
-           'I will only say this: it was never mainly about your face. It is the way you laugh before the ' +
-           'joke lands. It is you sending "Morning" at an hour that is not morning. It is the fact that ' +
-           'you are kind when there is nothing in it for you.\n\n' +
-           'The face is a bonus. Go and look again anyway.' },
-      { k: 'angry', t: 'you are angry at me',
-        b: 'Then I have probably earned it, and you should say so.\n\n' +
-           'I would rather have you annoyed and honest than pleasant and gone. Do not go quiet on me to be ' +
-           'polite. Tell me what I did.\n\n' +
-           'I am not going anywhere over an argument. I did not build all this to fold at the first hard ' +
-           'conversation.' },
-      { k: 'push', t: 'you need to get up and do something',
-        b: 'You are not lazy. You are tired, and those are not the same thing.\n\n' +
-           'Pick the smallest version of the thing. Not the whole thing — the first two minutes of it. ' +
-           'That is the entire trick and there is nothing else to it.\n\n' +
-           'You are far more capable than the version of you that talks in your head at night. I have seen ' +
-           'the evidence. She has not.' },
+           'It was never mainly the face. It is that you laugh before the joke lands, and that you are ' +
+           'kind when there is nothing in it for you.\n\n' +
+           'Go and look again anyway.' },
       { k: 'enough', t: 'you feel you are not enough',
-        b: 'You wrote this one down yourself, long before I ever saw it. So you already know the feeling well.\n\n' +
-           'Here is the only argument I have, and it is not a compliment — it is evidence.\n\n' +
-           'You taught yourself a second language out of books. You set yourself six goals and not one of them ' +
-           'was selfish. You got up on the days it was pointless.\n\n' +
-           'Not-enough people do not do any of that. They cannot. You have simply never been allowed to be ' +
-           'the judge in your own case.' },
+        b: 'You wrote this one down yourself, long before I saw it.\n\n' +
+           'So here is evidence instead of a compliment: you taught yourself a language out of books, ' +
+           'and you got up on the days it was pointless.\n\n' +
+           'Not-enough people cannot do that.' },
+      { k: 'angry', t: 'you are angry at me',
+        b: 'Then I have earned it. Say so.\n\n' +
+           'I would rather have you annoyed and honest than pleasant and gone.\n\n' +
+           'I am not going anywhere over an argument.' },
+      { k: 'push', t: 'you need to get up and do something',
+        b: 'You are not lazy. You are tired. Different things.\n\n' +
+           'Do the first two minutes of it. That is the entire trick.' },
       { k: 'meant', t: 'you finally understand what you meant to me', gate: 'day30',
-        b: 'If you are reading this, a month has gone by and you are still here.\n\n' +
-           'So here it is without the packaging: you were not a phase, or a distraction, or somebody I was ' +
-           'passing time with. You were the person I checked for first and thought about last.\n\n' +
-           'I did not build this to convince you of anything. I built it so that on some ordinary day years ' +
-           'from now, you would be able to prove to yourself that it was real.\n\n' +
-           'It was real. All of it.' }
+        b: 'A month, and you are still here.\n\n' +
+           'You were not a phase or a distraction. You were the person I checked for first and thought about last.\n\n' +
+           'I built this so that years from now you could prove to yourself it was real. It was.' }
     ];
 
     function read() { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return []; } }
@@ -3945,24 +3926,17 @@
     var host = $('#seen-list');
     var S = [
       ['What makes you you',
-       'You are funny before you are anything else. Not performed funny — the accidental kind, where you ' +
-       'say one flat word like <b>blah</b> and it is somehow the whole joke. People spend years trying to ' +
-       'be that and you do it half asleep.'],
+       'You are funny by accident. You say <b>blah</b> and that is the whole joke.'],
       ['What I admire',
-       'You are kind in the way that costs something. Anybody can be nice when it is easy. You check on ' +
-       'people when you are tired, which is a different thing entirely.'],
+       'You are kind when you are tired. That is the kind that counts.'],
       ['What I hope you never change',
-       'That you still get excited about small things. Rain. The moon. A chocolate. A photo of a sky. ' +
-       'Most people lose that by your age and pretend they meant to.'],
+       'You still get excited about rain. Most people lose that and pretend they meant to.'],
       ['What I hope life gives you',
-       'Mornings you are not dreading. Somebody who notices when you go quiet. Enough money that you never ' +
-       'have to think twice at a jewellery counter. And a proper long sleep, uninterrupted, at least once a week.'],
+       'Mornings you are not dreading, and one proper long sleep a week.'],
       ['What I see that you do not',
-       'You think you are forgetful and late and difficult. What is actually true is that you are the person ' +
-       'everyone tells things to. That does not happen by accident. People do not confide in the difficult one.'],
+       'You think you are difficult. You are the one everybody tells things to. Those are not the same person.'],
       ['The part nobody sees',
-       'You are much harder on yourself than anybody else would ever dare to be. I wish you would speak to ' +
-       'yourself the way you speak to the people you love. You would be unstoppable and slightly unbearable.']
+       'You would never speak to anyone the way you speak to yourself.']
     ];
     S.forEach(function (x) {
       var li = document.createElement('li');
@@ -4070,16 +4044,11 @@
     var hint = $('#strangers-hint');
     var TEXT =
       'I hope this one never becomes useful.\n\n' +
-      'But people drift, and lives move, and it would be dishonest to build all of this and pretend that ' +
-      'could never happen to us.\n\n' +
-      'So: if we end up strangers one day — if we stop talking, or something goes wrong, or life simply ' +
-      'takes us in different directions — I do not want you to remember me with any weight attached.\n\n' +
-      'No guilt. You will not owe me anything. You never did.\n\n' +
-      'I would only want you to remember that for some part of your life there was somebody who paid ' +
-      'proper attention. Who knew that you say blah, and go quiet before you go sad, and look at the sky ' +
-      'for no reason. Who thought all of that was worth writing down.\n\n' +
-      'That version of you existed, and somebody saw her clearly, and was glad about it.\n\n' +
-      'That does not stop being true, whatever happens next.';
+      'But people drift. So: if we end up strangers, I do not want you carrying any weight about it. ' +
+      'No guilt. You never owed me anything.\n\n' +
+      'Only remember that for some part of your life somebody paid proper attention — knew you say blah, ' +
+      'and go quiet before you go sad, and look at the sky for no reason.\n\n' +
+      'That stays true whatever happens next.';
     seal.addEventListener('click', function () {
       seal.classList.add('spent');
       note.hidden = false;
@@ -4101,26 +4070,18 @@
     var P = [
       { w: 'blah', title: 'blah',
         b: 'Of course it was this one.\n\n' +
-           'You say it maybe nine times a day and you have no idea it has become a whole language. ' +
-           'It means yes, no, I am tired, I am fine, I do not want to talk about it, and I am happy — ' +
-           'and somehow I always know which.\n\n' +
-           'One day somebody else will say it near me and I will look up before I can stop myself. ' +
-           'That is what you have done to a completely ordinary word.' },
+           'It means yes, no, I am tired, I am fine, and I am happy — and somehow I always know which.\n\n' +
+           'One day somebody else will say it near me and I will look up before I can stop myself.' },
       { w: 'stitch', title: 'stitch',
         b: 'The blue one.\n\n' +
-           'You sent me a photograph in the morning with him under your arm and your eyes barely open, ' +
-           'and I have thought about it more times than is reasonable.\n\n' +
-           'He gets to be there for the version of you nobody else sees. Honestly, I am a bit jealous of a toy.' },
+           'He gets to be there for the version of you nobody else sees. I am a bit jealous of a toy.' },
       { w: 'morning', title: 'morning',
-        b: 'You send it at hours that are not morning. Two in the afternoon. Eleven at night, once.\n\n' +
-           'I have never corrected you and I never will, because at some point it stopped meaning the time ' +
-           'of day and started meaning <i>I thought about you when I woke up</i>.\n\n' +
-           'That is the actual translation. I worked it out ages ago.' },
+        b: 'You send it at two in the afternoon.\n\n' +
+           'I have never corrected you, because it stopped meaning the time of day a long time ago. ' +
+           'It means <i>I thought about you when I woke up</i>.' },
       { w: 'rain', title: 'rain',
-        b: 'The weather changes and so do you. It is the strangest, best thing about you.\n\n' +
-           'Everybody else complains. You go quiet and pleased and you look out of the window like ' +
-           'something good is finally happening.\n\n' +
-           'I hope it rains on your birthday. I hope it rains on a lot of your days.' }
+        b: 'Everybody else complains. You go quiet and pleased.\n\n' +
+           'I hope it rains on your birthday.' }
     ];
 
     function found() { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return []; } }
@@ -4309,18 +4270,13 @@
     var box = $('#room'), body = $('#room-body');
     var NEEDED = 18, shown = false;
     var TEXT =
-      'If you are reading this, you found nearly everything I left in here.\n\n' +
-      'Which means you went looking. That is the part I did not expect and cannot really get over.\n\n' +
-      'So here is the last of it, with nothing built around it.\n\n' +
-      'I did not make this because it was your birthday. Your birthday was the excuse. I made it because ' +
-      'somewhere along the way I started paying a kind of attention to you that I have never paid to anybody, ' +
-      'and there was no ordinary way to tell you that without making it strange.\n\n' +
-      'I am not asking you for anything. I never was. There is no version of this where you owe me a feeling.\n\n' +
-      'I only wanted one person on this earth to have proof that they were looked at properly. ' +
-      'Not idealised. Not decorated. Actually noticed — the blah, the going quiet, the sky, the blue toy, ' +
-      'all of it.\n\n' +
-      'That is the whole thing. There was never enough room on a website for it, and there still is not.\n\n' +
-      'Happy birthday, Lana.';
+      'You found nearly everything I left in here. Which means you went looking.\n\n' +
+      'So, plainly: I did not make this because it was your birthday. That was the excuse.\n\n' +
+      'I made it because I started paying a kind of attention to you that I have never paid to anybody, ' +
+      'and there was no ordinary way to say so.\n\n' +
+      'I am not asking you for anything. I wanted one person to have proof that they were looked at ' +
+      'properly — the blah, the going quiet, the sky, the blue toy.\n\n' +
+      'That is all of it. Happy birthday, Lana.';
 
     function open() {
       if (shown) return; shown = true;
@@ -4421,30 +4377,22 @@
     var host = $('#board'), end = $('#board-end');
     var B = [
       { tag: 'you wrote', hers: '“I worried about… not being good enough.”',
-        his: 'You wrote that on a wall, above a desk covered in books you were teaching yourself from. ' +
-             'Nobody who is not good enough does that. <b>Not-good-enough people do not build a desk like that.</b>' },
-      { tag: 'you wrote', hers: '“I used to… feel like I’m not enough. Compare myself.”',
-        his: 'You compare your inside to other people’s outside, which is a rigged game and you always lose it. ' +
-             'I have seen the inside. It is kinder and harder-working than most of the outsides you are measuring it against.' },
-      { tag: 'your goals', hers: '“Finish Quran. Become a teacher. Write a novel. Help my family. Travel the world. Make my parents proud.”',
-        his: 'Six things, and not one of them is about being admired. Every single one is about giving something back. ' +
-             '<b>That list tells me more about you than any photograph.</b>' },
-      { tag: 'the books', hers: 'Second Language Acquisition · English Grammar in Use · Teaching by Principles',
-        his: 'You are going to be a very good teacher. Not because of the books — because you are the person ' +
-             'people already come to when they do not understand something and are embarrassed about it.' },
-      { tag: 'you were proud of', hers: '“Not giving up. Always trying. Caring deeply. Having a big heart.”',
-        his: 'You listed caring deeply as an achievement, and you were right to. Most people file it under weakness ' +
-             'and spend years training it out of themselves. Do not.' },
+        his: 'You wrote that above a desk covered in books you were teaching yourself from. ' +
+             '<b>Not-good-enough people do not build that desk.</b>' },
+      { tag: 'your goals', hers: '“Become a teacher. Write a novel. Make my parents proud.”',
+        his: 'Six goals on that list. Not one of them is about being admired.' },
+      { tag: 'the books', hers: 'Teaching by Principles',
+        his: 'You will be a good teacher — because people already come to you when they are ' +
+             'embarrassed not to understand something.' },
+      { tag: 'you were proud of', hers: '“Caring deeply. Having a big heart.”',
+        his: 'You filed caring deeply under achievements. You were right. Most people file it under weakness.' },
       { tag: 'on the wall', hers: 'Sabr · صبر',
-        his: 'Patience, and the harder half of it: staying decent while you wait. You have had more practice at ' +
-             'that than anyone your age should have needed.' },
+        his: 'Patience, and the harder half of it — staying kind while you wait.' },
       { tag: 'the black note', hers: '“Even on the hardest days, I still got up and tried.”',
-        his: 'This is the one I keep going back to. Not the goals, not the dreams. <b>This.</b> ' +
-             'You got up. On the days it was pointless, you got up anyway. That is the entire thing.' },
-      { tag: 'you reminded yourself', hers: '“You are stronger than you think. Your pain has a purpose. You’re going to make it.”',
-        his: 'You wrote those to a version of yourself who needed them and could not hear them from anybody else. ' +
-             'So here they are from outside your own head, where they are easier to believe: ' +
-             '<b>all four of them are true, and you are already making it.</b>' }
+        his: 'This is the one I keep going back to. Not the goals. <b>This.</b>' },
+      { tag: 'you reminded yourself', hers: '“You’re going to make it.”',
+        his: 'You wrote that for a version of you who could not hear it from anyone else. ' +
+             'From outside your head: <b>true.</b>' }
     ];
 
     B.forEach(function (n) {
@@ -4457,8 +4405,7 @@
       host.appendChild(d);
     });
 
-    end.innerHTML = 'You called that board <i>The Old Me</i>. I have met the new one. ' +
-                    'She is the same person, only less frightened — and I liked the first one too.';
+    end.innerHTML = 'You called it <i>The Old Me</i>. Same person. Less frightened.';
   })();
 
   /* ============================================================
