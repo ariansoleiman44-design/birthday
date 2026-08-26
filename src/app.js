@@ -2172,6 +2172,7 @@
       ['remind-sec', 'Remind Me Of Us', 'remind'],
       ['strangers-sec', 'If We Ever Become Strangers', 'strangers'],
       ['pass-sec', 'Four Words', 'password'],
+      ['place-sec', 'The Place', null],
       ['board-sec', 'The Girl At That Desk', null],
       ['mirror-sec', 'The Most Beautiful Thing', 'mirror'],
       ['garden-sec', 'The Garden', null],

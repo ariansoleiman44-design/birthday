@@ -20,6 +20,7 @@ const ASSETS = {
   __BIRTHDAY__: ['assets/web/birthday.m4a', 'audio/mp4'],
   __KAYA__: ['assets/web/kaya.m4a', 'audio/mp4'],
   __RAIN__: ['assets/web/rain.m4a', 'audio/mp4'],
+  __PLACE__: ['assets/web/place.jpg', 'image/jpeg'],
 };
 
 // the QR matrix is produced here, by a real encoder, and inlined as a bitmap

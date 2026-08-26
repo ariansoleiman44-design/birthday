@@ -590,6 +590,66 @@
     </div>
   </section>
 
+  <!-- 10e9a — THE PLACE -->
+  <section id="place-sec">
+    <div class="col">
+      <p class="label rise">One pin</p>
+      <h2 class="rise d1">Here. This is where we are going.</h2>
+
+      <div class="place-map rise d2">
+        <svg viewBox="0 0 400 300" aria-label="Erbil Citadel and Machko Cafe">
+          <defs>
+            <pattern id="hatch" width="6" height="6" patternTransform="rotate(35)"
+                     patternUnits="userSpaceOnUse">
+              <line x1="0" y1="0" x2="0" y2="6" stroke="rgba(168,128,28,.18)" stroke-width="1"/>
+            </pattern>
+          </defs>
+          <rect x="0" y="0" width="400" height="300" fill="none"/>
+          <!-- the ring road around the citadel mound -->
+          <ellipse cx="196" cy="126" rx="122" ry="92" fill="none"
+                   stroke="var(--gold-line)" stroke-width="10" opacity=".5"/>
+          <!-- the citadel itself, up on its mound -->
+          <ellipse cx="196" cy="126" rx="104" ry="76" fill="url(#hatch)"
+                   stroke="var(--gold)" stroke-width="1.6"/>
+          <ellipse cx="196" cy="126" rx="86" ry="60" fill="none"
+                   stroke="var(--gold-line)" stroke-width="1" stroke-dasharray="4 5"/>
+          <!-- streets -->
+          <path d="M0 236 L400 214" stroke="var(--gold-line)" stroke-width="7" fill="none" opacity=".45"/>
+          <path d="M58 300 L92 40" stroke="var(--gold-line)" stroke-width="5" fill="none" opacity=".35"/>
+          <path d="M330 300 L306 46" stroke="var(--gold-line)" stroke-width="5" fill="none" opacity=".35"/>
+          <!-- the bazaar block -->
+          <rect x="214" y="250" width="104" height="36" rx="2" fill="url(#hatch)"
+                stroke="var(--gold-line)" stroke-width="1"/>
+          <text x="266" y="272" text-anchor="middle" class="map-t">bazaar</text>
+          <text x="196" y="130" text-anchor="middle" class="map-c">قەڵای هەولێر</text>
+          <text x="196" y="148" text-anchor="middle" class="map-t">the citadel</text>
+          <!-- the pin -->
+          <g class="map-pin">
+            <path d="M150 208 c0-9 7-16 16-16 s16 7 16 16 c0 12-16 26-16 26 s-16-14-16-26 z"
+                  fill="#A8121F"/>
+            <circle cx="166" cy="207" r="5.4" fill="var(--s1)"/>
+          </g>
+          <text x="140" y="262" text-anchor="middle" class="map-l">مەچکۆ</text>
+          <text x="140" y="278" text-anchor="middle" class="map-t">machko</text>
+        </svg>
+      </div>
+
+      <div class="frame rise d2" style="width:min(22rem,86vw)">
+        <img src="__PLACE__" alt="Tea and kunafa on a balcony above Erbil at dusk"
+             loading="lazy" decoding="async" />
+      </div>
+
+      <p class="place-name rise d3">قاوەخانەی مەچکۆ</p>
+      <p class="place-sub rise d3">Machko Çayxane &middot; under the citadel wall, Erbil</p>
+
+      <p class="soft italic rise d3 short" id="place-copy">
+        Black tea in the little glass. Pistachios. Kunafa with the ice cream going soft on top.
+        And the whole citadel turning gold behind you while the traffic gets on with it below.
+      </p>
+      <p class="place-note rise d3">opens at eight &middot; ask for the balcony</p>
+    </div>
+  </section>
+
   <!-- 10e9b — HER BOARD, ANSWERED -->
   <section id="board-sec">
     <div class="col">
