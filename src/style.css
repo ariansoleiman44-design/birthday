@@ -2181,3 +2181,42 @@ html[data-mode="night"] #letter-body{ color:var(--ink); }
 }
 .strangers-seal span{ font-family:var(--f-display); font-size:2rem; color:var(--s2); }
 .strangers-seal.spent{ opacity:.4; pointer-events:none; }
+
+/* passwords */
+.pass-found{
+  font-family:var(--f-ui); font-weight:300; font-size:.55rem;
+  letter-spacing:.3em; text-transform:uppercase; color:var(--gold-lo);
+}
+
+/* the garden */
+.garden-wrap{
+  width:100%; aspect-ratio:1.4/1;
+  background:linear-gradient(180deg,var(--s1) 0%,var(--s2) 62%,var(--s4) 100%);
+  border:1px solid var(--gold-line);
+  box-shadow:0 1rem 2.4rem rgba(58,33,19,.13);
+  overflow:hidden;
+}
+#garden{ width:100%; height:100%; display:block; }
+#garden-copy{ min-height:2.6rem; }
+
+/* the room at the end of everything */
+#room{
+  position:fixed; inset:0; z-index:975;
+  display:grid; place-items:center; padding:clamp(1.4rem,6vw,3rem) 1.2rem;
+  background:radial-gradient(120% 90% at 50% 40%, #1B140D 0%, #0C0805 60%, #070403 100%);
+  overflow-y:auto; overscroll-behavior:contain;
+  opacity:0; visibility:hidden;
+  transition:opacity 1.6s var(--ease), visibility 1.6s;
+}
+#room.on{ opacity:1; visibility:visible; }
+.room-in{ width:min(32rem,90vw); display:grid; gap:1.3rem; justify-items:center; text-align:center; margin:auto; }
+.room-label{
+  font-family:var(--f-ui); font-weight:300; font-size:.55rem;
+  letter-spacing:.5em; text-transform:uppercase; color:rgba(230,199,102,.7);
+}
+.room-body{
+  font-family:var(--f-body);
+  font-size:clamp(1.08rem,1rem + .6vw,1.3rem); line-height:1.9;
+  color:#EFE3D2; white-space:pre-wrap; text-align:left;
+}
+#room .btn{ color:rgba(239,227,210,.7); border-color:rgba(230,199,102,.3); background:none; }

@@ -2156,6 +2156,9 @@
       ['noticed-sec', 'You Thought Nobody Noticed', 'noticed'],
       ['remind-sec', 'Remind Me Of Us', 'remind'],
       ['strangers-sec', 'If We Ever Become Strangers', 'strangers'],
+      ['pass-sec', 'Four Words', 'password'],
+      ['garden-sec', 'The Garden', null],
+      ['future-sec', 'Letters With Dates', null],
       ['question-sec', 'One Question', 'answered'],
       ['calendar-sec', 'The Box of Thirty', 'choc'],
       ['diary-sec', 'How Was Today', 'mood'],
@@ -4028,6 +4031,272 @@
     });
   })();
 
+
+  /* ============================================================
+     FOUR WORDS — passwords only she could guess
+     ============================================================ */
+
+  var passwords = (function () {
+    var input = $('#pass-in'), note = $('#pass-note'), out = $('#pass-out');
+    var wordEl = $('#pass-word'), bodyEl = $('#pass-body'), foundEl = $('#pass-found');
+    var KEY = 'lana-2808-pass';
+    var P = [
+      { w: 'blah', title: 'blah',
+        b: 'Of course it was this one.\n\n' +
+           'You say it maybe nine times a day and you have no idea it has become a whole language. ' +
+           'It means yes, no, I am tired, I am fine, I do not want to talk about it, and I am happy — ' +
+           'and somehow I always know which.\n\n' +
+           'One day somebody else will say it near me and I will look up before I can stop myself. ' +
+           'That is what you have done to a completely ordinary word.' },
+      { w: 'stitch', title: 'stitch',
+        b: 'The blue one.\n\n' +
+           'You sent me a photograph in the morning with him under your arm and your eyes barely open, ' +
+           'and I have thought about it more times than is reasonable.\n\n' +
+           'He gets to be there for the version of you nobody else sees. Honestly, I am a bit jealous of a toy.' },
+      { w: 'morning', title: 'morning',
+        b: 'You send it at hours that are not morning. Two in the afternoon. Eleven at night, once.\n\n' +
+           'I have never corrected you and I never will, because at some point it stopped meaning the time ' +
+           'of day and started meaning <i>I thought about you when I woke up</i>.\n\n' +
+           'That is the actual translation. I worked it out ages ago.' },
+      { w: 'rain', title: 'rain',
+        b: 'The weather changes and so do you. It is the strangest, best thing about you.\n\n' +
+           'Everybody else complains. You go quiet and pleased and you look out of the window like ' +
+           'something good is finally happening.\n\n' +
+           'I hope it rains on your birthday. I hope it rains on a lot of your days.' }
+    ];
+
+    function found() { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return []; } }
+    function tally() {
+      foundEl.textContent = found().length + ' of ' + P.length + ' opened';
+    }
+    function tryWord(raw) {
+      var w = String(raw || '').trim().toLowerCase().replace(/[^a-z؀-ۿ]/g, '');
+      if (!w) { note.textContent = 'Type something first.'; note.classList.add('show'); return; }
+      var hit = null;
+      P.forEach(function (p) { if (p.w === w) hit = p; });
+      if (!hit) {
+        note.textContent = 'Not that one. It is something only the two of you say.';
+        note.classList.add('show'); buzz(4); return;
+      }
+      var f = found();
+      if (f.indexOf(hit.w) === -1) { f.push(hit.w); try { localStorage.setItem(KEY, JSON.stringify(f)); } catch (e) {} }
+      out.hidden = false;
+      wordEl.textContent = '“' + hit.title + '”';
+      bodyEl.innerHTML = hit.b.replace(/\n/g, '<br>');
+      note.textContent = ''; note.classList.remove('show');
+      input.value = '';
+      sfx.crack(); buzz([12, 40, 12]); confetti.petals(10);
+      progress.mark('password');
+      tally();
+      if (found().length === P.length) {
+        note.textContent = 'All four. There are no more — those were the only words that were ours.';
+        note.classList.add('show');
+      }
+    }
+
+    return {
+      start: function () {
+        $('#pass-go').addEventListener('click', function () { tryWord(input.value); });
+        input.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter') { e.preventDefault(); tryWord(input.value); }
+        });
+        tally();
+      }
+    };
+  })();
+
+  /* ============================================================
+     THE GARDEN — one flower for every thing she has found
+     ============================================================ */
+
+  var garden = (function () {
+    var cv = $('#garden'), copy = $('#garden-copy');
+    var C, W, H, raf = 0, alive = false, t0 = 0;
+    var KEYS = ['open','film','choc','mood','daylock','rose','photos','video','scratch','letter',
+                'coupons','record','sing','quiz','oracle','game','arcade','reply','wish','vault',
+                'keeps','capsule','openwhen','noticed','remind','strangers','answered','password',
+                'letters','midnight','rain','keep'];
+
+    function size() { var d = fit(cv); W = d.w; H = d.h; C = d.x; }
+
+    function flower(x, groundY, h, hue, sway, open) {
+      C.strokeStyle = 'rgba(96,104,58,.85)'; C.lineWidth = Math.max(1.2, h * 0.022);
+      C.beginPath();
+      C.moveTo(x, groundY);
+      C.quadraticCurveTo(x + sway * 0.5, groundY - h * 0.55, x + sway, groundY - h);
+      C.stroke();
+      C.fillStyle = 'rgba(110,124,66,.8)';
+      C.beginPath();
+      C.ellipse(x + sway * 0.3 - h * 0.09, groundY - h * 0.45, h * 0.11, h * 0.045, -0.5, 0, 6.2832);
+      C.fill();
+      var fx = x + sway, fy = groundY - h, r = h * (open ? 0.13 : 0.06);
+      if (open) {
+        for (var k = 0; k < 5; k++) {
+          C.save(); C.translate(fx, fy); C.rotate(k * 1.2566 + hue);
+          C.fillStyle = k % 2 ? '#C0121F' : '#D62430';
+          C.beginPath(); C.ellipse(0, -r * 0.62, r * 0.44, r * 0.64, 0, 0, 6.2832); C.fill();
+          C.restore();
+        }
+        C.fillStyle = '#C9A227';
+        C.beginPath(); C.arc(fx, fy, r * 0.24, 0, 6.2832); C.fill();
+      } else {
+        C.fillStyle = 'rgba(160,140,96,.55)';
+        C.beginPath(); C.ellipse(fx, fy, r * 0.5, r * 0.8, 0, 0, 6.2832); C.fill();
+      }
+    }
+
+    function draw(now) {
+      if (!alive) return;
+      raf = requestAnimationFrame(draw);
+      var t = (now - t0) / 1000;
+      C.clearRect(0, 0, W, H);
+      var groundY = H * 0.93;
+      C.strokeStyle = 'rgba(110,82,14,.25)'; C.lineWidth = 1;
+      C.beginPath(); C.moveTo(0, groundY); C.lineTo(W, groundY); C.stroke();
+
+      var n = KEYS.length;
+      for (var i = 0; i < n; i++) {
+        var open = progress.has(KEYS[i]);
+        var seed = (i * 97) % 53;
+        var x = W * (0.06 + 0.88 * ((i + 0.5) / n));
+        var h = H * (open ? (0.34 + (seed % 7) * 0.035) : 0.13);
+        var sway = Math.sin(t * 0.5 + i) * (open ? h * 0.06 : h * 0.03);
+        flower(x, groundY, h, seed * 0.21, sway, open);
+      }
+    }
+
+    function update() {
+      var c = 0;
+      KEYS.forEach(function (k) { if (progress.has(k)) c++; });
+      copy.innerHTML = c === 0
+        ? 'Nothing has grown yet. Every single thing you find in here plants one.'
+        : '<b>' + c + '</b> of ' + KEYS.length + ' have opened. The rest are still waiting on you.';
+    }
+
+    return {
+      start: function () {
+        size(); update();
+        progress.onChange(update);
+        new IntersectionObserver(function (es) {
+          if (es[0].isIntersecting && !alive) { alive = true; size(); t0 = performance.now(); raf = requestAnimationFrame(draw); }
+          else if (!es[0].isIntersecting && alive) { alive = false; cancelAnimationFrame(raf); }
+        }, { threshold: 0.15 }).observe(cv);
+        var to; window.addEventListener('resize', function () { clearTimeout(to); to = setTimeout(function () { if (alive) size(); }, 250); });
+      }
+    };
+  })();
+
+  /* ============================================================
+     LETTERS WITH DATES ON THEM
+     ============================================================ */
+
+  var future = (function () {
+    var list = $('#future-list'), box = $('#future-open');
+    var whenEl = $('#future-when'), bodyEl = $('#future-body');
+
+    function nextOf(m, d) {
+      var n = new Date(), y = n.getFullYear();
+      var t = new Date(y, m, d, 0, 0, 0, 0);
+      if (n >= t) t = new Date(y + 1, m, d, 0, 0, 0, 0);
+      return t;
+    }
+    var F = [
+      { title: 'On the first of January', when: function () { return nextOf(0, 1); },
+        b: 'A new year, and you are still here reading something I wrote in an August that is now behind us.\n\n' +
+           'I have no idea what happened between then and now. Whether we are closer, or further, or exactly ' +
+           'the same. Whatever it turned out to be, I hope this year is gentler with you than the last one was.\n\n' +
+           'Same as ever: eat properly, sleep more, and text me when you cannot.' },
+      { title: 'On your next birthday', when: function () {
+          // the one AFTER this year's — otherwise it unlocks two days from now
+          var n = new Date(), y = n.getFullYear();
+          var thisYear = new Date(y, 7, 28);
+          var base = (n >= new Date(y, 7, 29)) ? y + 1 : y;
+          return new Date(base + 1, 7, 28, 0, 0, 0, 0);
+        },
+        b: 'A whole year.\n\n' +
+           'I wrote this before I knew how any of it would go, which means I am talking to a version of you ' +
+           'I have not met yet. Hello. I hope she is doing well.\n\n' +
+           'Whatever this turned into — friends, or more, or something with no name — I meant every word of ' +
+           'the version you read last year, and I still do.\n\n' +
+           'Happy birthday, again. You will forget I said this. That is fine. It is written down.' }
+    ];
+
+    function render() {
+      list.innerHTML = '';
+      F.forEach(function (f, i) {
+        var open = f.when(), now = new Date();
+        var unlocked = now >= open;
+        var d = Math.ceil((open - now) / 86400000);
+        var b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'more-item' + (unlocked ? '' : ' locked');
+        b.innerHTML = '<span class="w">' + (unlocked ? '&#9998;' : '&#128274;') + '</span>' +
+                      '<b>' + f.title + '</b><em>' + (unlocked ? 'open' : d + ' days') + '</em>';
+        if (unlocked) b.addEventListener('click', function () {
+          box.hidden = false; whenEl.textContent = f.title; bodyEl.textContent = f.b;
+          sfx.crack(); buzz(8); progress.mark('future');
+        });
+        list.appendChild(b);
+      });
+    }
+    return { start: render };
+  })();
+
+  /* ============================================================
+     THE ROOM AT THE END — opens only when she has found nearly
+     everything. Quiet, dark, and the last honest thing.
+     ============================================================ */
+
+  var room = (function () {
+    var box = $('#room'), body = $('#room-body');
+    var NEEDED = 18, shown = false;
+    var TEXT =
+      'If you are reading this, you found nearly everything I left in here.\n\n' +
+      'Which means you went looking. That is the part I did not expect and cannot really get over.\n\n' +
+      'So here is the last of it, with nothing built around it.\n\n' +
+      'I did not make this because it was your birthday. Your birthday was the excuse. I made it because ' +
+      'somewhere along the way I started paying a kind of attention to you that I have never paid to anybody, ' +
+      'and there was no ordinary way to tell you that without making it strange.\n\n' +
+      'I am not asking you for anything. I never was. There is no version of this where you owe me a feeling.\n\n' +
+      'I only wanted one person on this earth to have proof that they were looked at properly. ' +
+      'Not idealised. Not decorated. Actually noticed — the blah, the going quiet, the sky, the blue toy, ' +
+      'all of it.\n\n' +
+      'That is the whole thing. There was never enough room on a website for it, and there still is not.\n\n' +
+      'Happy birthday, Lana.';
+
+    function open() {
+      if (shown) return; shown = true;
+      body.textContent = TEXT;
+      box.classList.add('on'); box.setAttribute('aria-hidden', 'false');
+      document.body.classList.add('is-locked');
+      music.duck(true); rain.duck(true); sfx.heart(3);
+      // no vibrate here: this can open without a tap, and Chrome warns about it
+      progress.mark('room');
+      try { localStorage.setItem('lana-2808-room', '1'); } catch (e) {}
+    }
+    function close() {
+      box.classList.remove('on'); box.setAttribute('aria-hidden', 'true');
+      document.body.classList.remove('is-locked');
+      music.duck(false); rain.duck(false);
+    }
+    function check() {
+      if (shown) return;
+      if (progress.count() >= NEEDED) setTimeout(open, 900);
+    }
+    return {
+      start: function () {
+        $('#room-close').addEventListener('click', close);
+        document.addEventListener('keydown', function (e) {
+          if (e.key === 'Escape' && box.classList.contains('on')) close();
+        });
+        try { if (localStorage.getItem('lana-2808-room')) shown = false; } catch (e) {}
+        progress.onChange(check);
+        check();
+      },
+      force: open
+    };
+  })();
+
   /* ============================================================
      THE SEAL — press and hold for what was never said
      ============================================================ */
@@ -4357,6 +4626,10 @@
   report.start();
   question.start();
   openWhen.start();
+  passwords.start();
+  garden.start();
+  future.start();
+  room.start();
   sing.start();
   game.start();
   dayLock.start();

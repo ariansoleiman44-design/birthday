@@ -544,6 +544,52 @@
     </div>
   </section>
 
+  <!-- 10e7 — PASSWORDS -->
+  <section id="pass-sec">
+    <div class="col">
+      <p class="label rise">Only you would know</p>
+      <h2 class="rise d1">Four words.</h2>
+      <p class="soft italic rise d2 short">
+        Each one opens something different. Nobody else could guess them, which is the point.
+      </p>
+      <div class="letter-paper rise d2" style="padding:1.1rem">
+        <label class="field-label" for="pass-in">Type one</label>
+        <input id="pass-in" type="text" autocomplete="off" autocapitalize="none"
+               spellcheck="false" placeholder="you already know the first one" />
+        <div class="field-row"><button class="btn solid" id="pass-go" type="button">Open it</button></div>
+        <p class="field-note" id="pass-note"></p>
+      </div>
+      <div class="letter-paper" id="pass-out" hidden style="text-align:left">
+        <p class="cal-day" id="pass-word"></p>
+        <p class="cal-text" id="pass-body"></p>
+      </div>
+      <p class="pass-found" id="pass-found"></p>
+    </div>
+  </section>
+
+  <!-- 10e8 — THE GARDEN -->
+  <section id="garden-sec">
+    <div class="col">
+      <p class="label rise">It grows</p>
+      <h2 class="rise d1">The garden.</h2>
+      <p class="soft italic rise d2 short" id="garden-copy"></p>
+      <div class="garden-wrap rise d2"><canvas id="garden"></canvas></div>
+    </div>
+  </section>
+
+  <!-- 10e9 — LATER -->
+  <section id="future-sec">
+    <div class="col">
+      <p class="label rise">Not for this year</p>
+      <h2 class="rise d1">Letters with dates on them.</h2>
+      <div class="more-list rise d2" id="future-list"></div>
+      <div class="letter-paper" id="future-open" hidden style="text-align:left">
+        <p class="cal-day" id="future-when"></p>
+        <p class="cal-text" id="future-body"></p>
+      </div>
+    </div>
+  </section>
+
   <!-- 10f — ONE QUESTION -->
   <section id="question-sec">
     <div class="col">
@@ -624,6 +670,14 @@
 <div id="shake-card" aria-hidden="true"><span id="shake-text"></span></div>
 
 <!-- ══════════ THE FILM ══════════ -->
+<div id="room" aria-hidden="true">
+  <div class="room-in">
+    <p class="room-label">You found everything</p>
+    <p class="room-body" id="room-body"></p>
+    <button class="btn ghost" id="room-close" type="button">close the door</button>
+  </div>
+</div>
+
 <div id="midnight" aria-hidden="true">
   <div class="m-in">
     <p class="m-now">it is midnight</p>
