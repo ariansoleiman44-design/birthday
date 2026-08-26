@@ -1301,6 +1301,8 @@
         var c = render();
         c.toBlob(function (blob) {
           if (!blob) { btn.disabled = false; say('That did not work. Try again.'); return; }
+          // outside the artifact host there is no window.claude at all
+          if (!window.claude || typeof window.claude.use !== 'function') { fallback(c); return; }
           window.claude.use('downloads').then(function (dl) {
             if (!dl) { fallback(c); return; }
             dl.save({ filename: 'lana-28-august.png', data: blob }).then(function () {
